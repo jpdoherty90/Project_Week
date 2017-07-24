@@ -13,12 +13,17 @@ from models import User #, Event, Performer, Venue
 
 
 def index(request):
+    context = {
+                  'x':0
+        }
     
     if request.POST:
     
-    context = {
+        context = {
+                  'x':0
+        }
 
-    }
+        
   
     return render(request, 'stubhub/home.html', context)
 
@@ -86,3 +91,6 @@ def logout(request):
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
+
+def log_reg(request):
+    return render (request,"stubhub/login.html")
