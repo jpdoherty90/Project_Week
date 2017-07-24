@@ -7,13 +7,22 @@
     <title>Document</title>
 </head>
 <body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
      <h3>Login</h3>
      <form action="/login_attempt">
         {% csrf_token %}
         Email:<br>
         <input type="text" name="email"><br>
         Password:<br>
-        <input type="text" name="password">
+        <input type="text" name="password"><br>
+        <input type="submit" value="Log In">
     </form>
     <br>
     <br>
@@ -28,9 +37,10 @@
         Email:<br>
         <input type="text" name="email"><br>
         Password:<br>
-        <input type="text" name="password">
+        <input type="text" name="password"><br>
         Confirm Password:<br>
-        <input type="text" name="confirm">
+        <input type="text" name="confirm"><br>
+        <input type="submit" value="Create Account">
     </form>
 </body>
 </html>
