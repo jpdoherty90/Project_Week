@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-import bcrypt
+from models import User, Ticket #, Event, Performer, Venue
 
 import re
 
-from models import User #, Event, Performer, Venue
+import bcrypt
+
 
 
 
@@ -36,12 +37,12 @@ def register(request):
             messages.add_message(request, messages.ERROR, errors[tag])
         return redirect("/")
     else:
-        first_name =  request.POST['first_name']
-        last_name =  request.POST['last_name']
-        email = request.POST['email']
+        first =  request.POST['first_name']
+        last =  request.POST['last_name']
+        mail = request.POST['email']
         hash1 = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
  
-        user = User.objects.create(first_name=first_name, last_name=last_name, email=email, password_hash=hash1)
+        user = User.objects.create(first_name=first, last_name=last, email=mail, password_hash=hash1)
 
         if not user:
             messages.add_message(request, messages.ERROR, "User email already exists.")
@@ -63,7 +64,7 @@ def success(request):
     
     return render(request, 'stubhub/home.html', context)
     
-    
+
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -98,6 +99,13 @@ def post_tickets(request):
     seller_id = request.POST['event']
     seat = request.POST['seat']
     price = request.POST['price']
+
+
+#-
+#-
+
+    #new_ticket = 
+    
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
