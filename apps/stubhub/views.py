@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
+import bcrypt
+
 import re
 
 from models import User #, Event, Performer, Venue
@@ -96,10 +98,10 @@ def post_tickets(request):
     seller_id = request.POST['event']
     seat = request.POST['seat']
     price = request.POST['price']
-    
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
-    
 def log_reg(request):
     return render (request,"stubhub/login.html")
 
