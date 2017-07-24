@@ -28,11 +28,11 @@
     <br>
 
     <h3>Create Account</h3>
-     <form action="/registration_attempt">
+     <form action="/registration_attempt" method="post">
         {% csrf_token %}
         First name:<br>
         <input type="text" name="first_name"><br>
-        First name:<br>
+        Last name:<br>
         <input type="text" name="last_name"><br>
         Email:<br>
         <input type="text" name="email"><br>

@@ -19,11 +19,8 @@ class UserManager(models.Manager):
             errors['already_user'] = 'Looks like you already have an account.  Try logging in!'
         except:
             pass
-        # Check that names are alpha only
-        if not NAME_REGEX.match(post_data['first_name']) or not NAME_REGEX.match(post_data['last_name']):
-            errors['invalid_name'] = 'Names can only contain letters'
         # Check name length
-        if len(post_data['first_name']) < 3 or len(post_data['last_name']) < 3:
+        if len(post_data['first_name']) < 1 or len(post_data['last_name']) < 1:
             errors['name_length'] = 'Names must both be at least 3 characters'    
         # Check e-mail format
         if not EMAIL_REGEX.match(post_data['email']):
