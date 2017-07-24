@@ -5,6 +5,9 @@ from django.shortcuts import render, redirect, HttpResponse
 
 from models import User, Ticket #, Event, Performer, Venue
 
+import re
+
+
 
 
 #-----------------------------------------------------------------
@@ -37,7 +40,7 @@ def register(request):
         email = request.POST['email']
         hash1 = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
  
-        user = User.objects.create(first_name=name, last_name=last_name, email=email, password_hash=hash1)
+        user = User.objects.create(first_name=first_name, last_name=last_name, email=email, password_hash=hash1)
 
         if not user:
             messages.add_message(request, messages.ERROR, "User email already exists.")
