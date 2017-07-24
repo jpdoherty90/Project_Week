@@ -69,7 +69,12 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
 
-
+class Venue(models.Model):
+    name = models.CharField(max_length = 256)
+    address = models.CharField(max_length = 256)
+    extended_address = models.CharField(max_length = 256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class Performer(models.Model):
     name = models.CharField(max_length = 256)
@@ -81,28 +86,17 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
-
-class Venue(models.Model):
-    name = models.CharField(max_length = 256)
-    address = models.CharField(max_length = 256)
-    extended_address = models.CharField(max_length = 256)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
 class Event(models.Model):
     title = models.CharField(max_length = 256)
     short_title = models.CharField(max_length = 256)
     event_date_time = models.DateTimeField()
     visible_until = models.DateTimeField()
-    popularity_score = models.IntegerField()
+    popularity_score = models.FloatField()
     venue = models.ForeignKey(Venue, related_name='events')
     performers = models.ManyToManyField(Performer, related_name='events')
     category = models.ForeignKey(Category, related_name='events')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
 
 class Ticket(models.Model):
     event = models.ForeignKey(Event, related_name="tickets")
@@ -113,7 +107,3 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = TicketManager()
-
-
-
-
