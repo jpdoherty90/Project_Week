@@ -14,10 +14,8 @@ from models import User #, Event, Performer, Venue
 
 def index(request):
     
-    if request.POST:
-    
     context = {
-
+        "test": "test",
     }
   
     return render(request, 'stubhub/home.html', context)
@@ -86,3 +84,14 @@ def logout(request):
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
+
+
+
+def post_tickets(request):
+
+    event = request.POST['event']
+    seller_id = request.POST['event']
+    seat = request.POST['seat']
+    price = request.POST['price']
+    
+    
