@@ -57,7 +57,7 @@ for event in all_events:
     except:
         Category.objects.create(tag=tag)
 
-#  ******CATEGORIES******
+#  ******EVENTS******
 
 # write event data to our models
 for event in all_events:
