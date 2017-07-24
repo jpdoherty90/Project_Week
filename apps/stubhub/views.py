@@ -11,12 +11,12 @@ from models import User #, Event, Performer, Venue
 #-----------------------------------------------------------------
 
 
-
 def index(request):
-    
+
     context = {
         "test": "test",
     }
+
   
     return render(request, 'stubhub/home.html', context)
 
@@ -59,6 +59,7 @@ def success(request):
     
     return render(request, 'stubhub/home.html', context)
     
+    
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -94,4 +95,9 @@ def post_tickets(request):
     seat = request.POST['seat']
     price = request.POST['price']
     
+
+
     
+def log_reg(request):
+    return render (request,"stubhub/login.html")
+
