@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sell Tickets</title>
+</head>
+<body>
+    <h1>Post tickets to sell</h1>
+    <form action="/post_tickets" method="post">
+        {% csrf_token %}
+        <label for="event">Event: </label>
+        <input type="text" id="event" name="event">
+        <br>
+        <label for="seat">Seat: </label>
+        <input type="text" id="seat" name="seat">
+        <br>
+        <label for="price">Price: </label>
+        <input type="text" id="price" name="price">
+        <br>
+        <input type="submit" value="Post Tickets" name="">  
+    </form>
+</body>
+</html>
