@@ -12,8 +12,6 @@ import re
 import bcrypt
 
 
-
-
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -70,9 +68,10 @@ def success(request):
 #-----------------------------------------------------------------
 
 def login(request):
+    errors = User.objects.login_validator(request.POST)
     email = request.POST['email']
-    if not User.objects.filter(email=email):
-        messages.add_message(request, messages.ERROR, "Invalid login info.")
+    if len(errors):
+        messages.add_message(request, messages.ERROR, "Invalid email or password.")
         return redirect("/log_reg")
     else:
         user = User.objects.get(email=email)
@@ -99,13 +98,6 @@ def post_tickets(request):
     seat = request.POST['seat']
     price = request.POST['price']
 
-
-#-
-#-
-
-    #new_ticket = 
-    
-
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -113,8 +105,10 @@ def log_reg(request):
     return render (request,"stubhub/login.html")
 
 def acc_info(request):
-    context = { 'user': User.objects.get(id=request.session['user_id'])
+    context = { 'user': User.objects.get(id=request.session['user_id']),
+                'tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
     }
+    
     return render (request,"stubhub/acc_info.html",context)
 
 def sell_tickets(request):
