@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User, Ticket #, Event, Performer, Venue
+from models import User, Ticket, Event #, Performer, Venue
 
 import re
 
@@ -92,21 +92,42 @@ def logout(request):
 #-----------------------------------------------------------------
 
 
+def sell_tickets(request):
+    return render(request, 'stubhub/sell_tickets.html')
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+
+
 
 def post_tickets(request):
 
     event = request.POST['event']
-    seller_id = request.POST['event']
+    seller_id = request.session['user_id']
     seat = request.POST['seat']
     price = request.POST['price']
 
-    #new_ticket = 
-    
+    seller = User.objects.get(id=seller_id)
+
+    new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
+
+    return redirect('/tickets_posted')
+
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
+
+def tickets_posted(request):
+    return render(request, 'tickets_post_success.html')
     
+
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
 def log_reg(request):
     return render (request,"stubhub/login.html")
 
