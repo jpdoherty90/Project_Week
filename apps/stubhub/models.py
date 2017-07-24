@@ -52,6 +52,17 @@ class UserManager(models.Manager):
             errors['incorrect_password'] = 'Password incorrect.  Please try again!'
         return errors
 
+
+
+
+class TicketManager(models.Manager):
+    def post_ticket_validator(self, postData):
+        errors = {}
+        
+        return errors
+
+
+
 class User(models.Model):
     first_name = models.CharField(max_length = 128)
     last_name = models.CharField(max_length = 128)
@@ -60,3 +71,16 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+
+
+
+
+class Ticket(models.Model):
+    #event = models.ForeignKey(Event)
+    seller = models.ForeignKey(User, related_name="sellers")
+    buyer = models.ForeignKey(User, related_name="buyers")
+    seat = models.CharField(max_length = 128)
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = TicketManager()
