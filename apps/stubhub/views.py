@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User #, Event, Performer, Venue
+from models import User, Ticket #, Event, Performer, Venue
 
 
 
@@ -59,7 +59,7 @@ def success(request):
     
     return render(request, 'stubhub/home.html', context)
     
-    
+
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -94,8 +94,12 @@ def post_tickets(request):
     seller_id = request.POST['event']
     seat = request.POST['seat']
     price = request.POST['price']
+
+    #new_ticket = 
     
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
     
 def log_reg(request):
