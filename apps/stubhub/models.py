@@ -2,5 +2,61 @@
 from __future__ import unicode_literals
 
 from django.db import models
+import bcrypt
+import re
 
-# Create your models here.
+# Regex models:
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
+
+class UserManager(models.Manager):
+    # Validations for a registration
+    def new_user_validator(self, post_data):
+        errors = {}
+        # See if the e-mail address is already registered - Prompt them to log-in
+        try:
+            User.objects.get(email = post_data['email'])
+            errors['already_user'] = 'Looks like you already have an account.  Try logging in!'
+        except:
+            pass
+        # Check that names are alpha only
+        if not NAME_REGEX.match(post_data['first_name']) or not NAME_REGEX.match(post_data['last_name']):
+            errors['invalid_name'] = 'Names can only contain letters'
+        # Check name length
+        if len(post_data['first_name']) < 3 or len(post_data['last_name']) < 3:
+            errors['name_length'] = 'Names must both be at least 3 characters'    
+        # Check e-mail format
+        if not EMAIL_REGEX.match(post_data['email']):
+            errors['invalid_email'] = 'Email address is invalid'
+            return errors
+        # Check password length
+        if len(post_data['password']) < 8:
+            errors['password_length'] = 'Password should be at least 8 characters'
+        # Check password against password confirm
+        if post_data['password'] != post_data['confirm']:
+            errors['password_match'] = 'Passwords do not match'
+        return errors
+
+    def login_validator(self, post_data):
+        errors = {}
+        # See if the e-mail address is already registered - If not, prompt them to create an account
+        try:
+            user = User.objects.get(email=post_data['email'])
+        except:
+            errors['user_not_registered'] = "Sorry, we can't find that e-mail in our system.  Please create an account."
+            return errors
+        entered_pw = post_data['password']
+        user_hash = user.password_hash
+        # Authenticate the password
+        if not bcrypt.checkpw(entered_pw.encode(), user_hash.encode()):
+            errors['incorrect_password'] = 'Password incorrect.  Please try again!'
+        return errors
+
+class User(models.Model):
+    first_name = models.CharField(max_length = 128)
+    last_name = models.CharField(max_length = 128)
+    email = models.CharField(max_length = 256, unique=True)
+    password_hash = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = UserManager()
