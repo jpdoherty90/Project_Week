@@ -7,12 +7,9 @@
     <title>Sell Tickets</title>
 </head>
 <body>
-    <h1>Post tickets to sell</h1>
-    <form action="/post_tickets" method="post">
+    <h1>Sell a ticket to {{ event.title }}:</h1>
+    <form action="/sell/{{event.id}}/post_tickets" method="post">
         {% csrf_token %}
-        <label for="event">Event: </label>
-        <input type="text" id="event" name="event">
-        <br>
         <label for="seat">Seat: </label>
         <input type="text" id="seat" name="seat">
         <br>

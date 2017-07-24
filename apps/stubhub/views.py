@@ -92,8 +92,17 @@ def logout(request):
 #-----------------------------------------------------------------
 
 
-def sell_tickets(request):
-    return render(request, 'stubhub/sell_tickets.html')
+def init_sale(request, parameter):
+    
+    event_id = parameter
+    event = Event.objects.get(id=event_id)
+
+    context = {
+        "event": event,
+    }
+
+    return render(request, '/stubhub/init_sale.html', context)
+
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -101,26 +110,28 @@ def sell_tickets(request):
 
 
 
-def post_tickets(request):
+def post_tickets(request, parameter):
+    
+    event_id = parameter
+    event = Event.objects.get(id=event_id)
 
-    event = request.POST['event']
     seller_id = request.session['user_id']
+    seller = User.objects.get(id=seller_id)
+
     seat = request.POST['seat']
     price = request.POST['price']
 
-    seller = User.objects.get(id=seller_id)
-
     new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
 
-    return redirect('/tickets_posted')
+    return redirect('/ticket_posted')
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+# #-----------------------------------------------------------------
+# #-----------------------------------------------------------------
 
 
-def tickets_posted(request):
-    return render(request, 'tickets_post_success.html')
+def ticket_posted(request):
+    return render(request, 'sell_success.html')
     
 
 
