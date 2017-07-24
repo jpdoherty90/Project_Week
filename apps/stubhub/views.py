@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect, HttpResponse
 
 from models import User, Ticket #, Event, Performer, Venue
 
+from django.contrib import messages
+
 import re
 
 import bcrypt
@@ -58,8 +60,7 @@ def success(request):
     
     user = User.objects.get(id=request.session['user_id'])
 
-    context = {
-
+    context = { 'user': User.objects.get(id=request.session['user_id'])
     }
     
     return render(request, 'stubhub/home.html', context)
@@ -69,21 +70,19 @@ def success(request):
 #-----------------------------------------------------------------
 
 def login(request):
-
-    try:
-        user = User.objects.login_validator(request.POST)
-        request.session['name'] = user.name
-        request.session['email'] = user.email
-        request.session['user_id'] = user.id
-        return redirect('/success')
-    except:
+    email = request.POST['email']
+    if not User.objects.filter(email=email):
         messages.add_message(request, messages.ERROR, "Invalid login info.")
-        return redirect("/")
+        return redirect("/log_reg")
+    else:
+        user = User.objects.get(email=email)
+        request.session['user_id'] = user.id
+        return redirect ('/success')
 
 #-----------------------------------------------------------------
 #----------------------------------------------------------------
 
-def logout(request):
+def log_out(request):
     for sesskey in request.session.keys():
         del request.session[sesskey]
     return redirect("/")
@@ -113,3 +112,12 @@ def post_tickets(request):
 def log_reg(request):
     return render (request,"stubhub/login.html")
 
+def acc_info(request):
+    context = { 'user': User.objects.get(id=request.session['user_id'])
+    }
+    return render (request,"stubhub/acc_info.html",context)
+
+def sell_tickets(request):
+    context = { 'user': User.objects.get(id=request.session['user_id'])
+    }
+    return render (request,"stubhub/sell_tickets.html",context)

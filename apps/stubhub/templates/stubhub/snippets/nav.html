@@ -1,4 +1,20 @@
 <h1> TixPix </h1>
+
+{%if user.id %}
+<p>Hello, {{user.first_name}}</p>
+<a href="/acc_info">My Acc</a>
+<br>
+<a href="/log_out">Log Out</a>
+<br>
+<a href="/sell_tickets">Sell Tickets</a>
+<br>
+
+{%endif%}
+
+{%if not user.id %}
+<p>Welcome</p>
 <a href="/log_reg">Login</a>
 <br>
+{%endif%}
+
 ---------------> nav
