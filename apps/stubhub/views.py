@@ -17,9 +17,10 @@ import bcrypt
 
 
 def index(request):
-
+    all_events = Event.objects.order_by('event_date_time', 'popularity_score')
+    print all_events
     context = {
-        "test": "test",
+        'selected_events': all_events
     }
 
   
