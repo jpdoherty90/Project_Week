@@ -12,7 +12,8 @@ urlpatterns = [
     url(r'^sell/(?P<parameter>\d+)$', views.init_sale),
     url(r'^sell/(?P<parameter>\d+)/post_tickets$', views.post_tickets),
     url(r'^ticket_posted/(?P<parameter>\d+)$', views.ticket_posted),
-    url(r'^post_tickets$', views.post_tickets),
+    url(r'^cart$', views.cart),
     url(r'^search$', views.search_results),  
     url(r'^process_search$', views.process_search), 
+    url(r'^event/(?P<parameter>\d+)$', views.show_event),
 ]

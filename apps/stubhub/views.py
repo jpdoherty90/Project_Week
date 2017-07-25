@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User, Ticket, Event, Performer, Venue, Category
+from models import User, Ticket, Event, Performer, Venue, Category, Cart
+
 
 from django.contrib import messages
 
@@ -25,7 +26,6 @@ def index(request):
         'categories': categories
     }
 
-  
     return render(request, 'stubhub/home.html', context)
 
 
@@ -166,13 +166,14 @@ def ticket_posted(request, parameter):
     return render(request, 'stubhub/sell_success.html', context)
     
 
-
-
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
 def log_reg(request):
     return render (request,"stubhub/login.html")
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
 def acc_info(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
@@ -180,6 +181,9 @@ def acc_info(request):
     }
     
     return render (request,"stubhub/acc_info.html",context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
 def sell_tickets(request):
     context = { 'user': User.objects.get(id=request.session['user_id'])
@@ -189,6 +193,18 @@ def sell_tickets(request):
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
+
+def cart(request):
+    context = { 'user': User.objects.get(id=request.session['user_id']),
+                'cart': 'x'
+    }
+
+    return render (request,"stubhub/cart.html",context)
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
 
 def search_results(request):
     search_field = request.session['search_field']
@@ -233,3 +249,22 @@ def process_search(request):
         return redirect('/search')
     else:
         return redirect('/')
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+
+def show_event(request, parameter):
+    
+    event = Event.objects.get(id=parameter)
+
+    context = {
+        "event": event,
+    }
+
+    return render(request, 'stubhub/show_event.html', context)
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------

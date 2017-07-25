@@ -9,11 +9,17 @@
     color: white;
     text-decoration: none;
 }
-h1.greeting{
+.grey_text{
     color:#424242;
 }
+.light_grey_text{
+    color:#BDBDBD;
+}
+.light{
+    font-weight:600;
+}
 .messages{
-    color: #E57373;
+    color: #E53935;
 }
 
 body{
@@ -24,6 +30,30 @@ div.container{
     padding-left: 50px;
     padding-right: 50px;
 }
+input[type=text], select {
+    padding: 7px 15px;
+    margin: 3px 0;
+    height:28px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.button {
+    background-color: #FF5722; 
+    border: none;
+    color: white;
+    padding: 3px;
+    padding-left:10px;
+    padding-right:10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    height: 28px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
 
 
 /* log in page */
@@ -33,7 +63,7 @@ div.reg_content{
     height:400px;
 }
 div.content{
-    padding: 20px;
+    padding: 30px;
     background-color: white;
     margin:10px;
 }
@@ -57,9 +87,6 @@ div.nav{
 div.visitor_nav{
     display: inline-block;
 }
-
-
-
 div.header_content{
     margin:auto;
     margin-left:10px;
@@ -68,7 +95,7 @@ div.header_content{
 div.nav ul{
     display:inline-block;
     float: right;
-    margin-top:32px;
+    margin-top:38px;
 }
 div.nav ul li{
     list-style: none;
@@ -79,4 +106,30 @@ div.nav ul li{
 div.greeting{
     display: inline-block;
 }
+
+.basic_button {
+    background: lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    text-decoration: none;
+    color: black;
+    margin-top: 10px;
+    height: 15px;
+    line-height: 15px;
+    border: 1px solid gray;
+    margin-left: 10px;
+}
+div.search{
+    padding-right: 30px;
+    padding-left: 30px;
+    padding-top:15px;
+    padding-bottom:15px;
+    background-color: white;
+    margin:10px;
+}
+input.search{
+    width: 250px;
+}
+
+
 

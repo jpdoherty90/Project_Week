@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
+     <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">    
+    <title>Document</title>
+</head>
+
+
+{% include 'stubhub/snippets/nav.html' %}
+<body>
+    <div class="container">
+        <div class="content">
+        <h3 class="grey_text">Shopping Cart</h3>
+        <hr>
+
+        <form action="/action" method="POST">
+        <input class="button" type="submit" value="Check Out">
+        </form>
+        </div>
+    </div>
+</body>
+</html>
