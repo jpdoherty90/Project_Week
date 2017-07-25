@@ -19,12 +19,16 @@ import bcrypt
 
 
 def index(request):
-    
+    try: 
+        user = User.objects.get(id=request.session['user_id'])
+    except:
+        user = None
     all_events = Event.objects.order_by('event_date_time', 'popularity_score')
     categories = Category.objects.order_by('tag')
     context = {
         'selected_events': all_events,
-        'categories': categories
+        'categories': categories,
+        'user': user
     }
 
     return render(request, 'stubhub/home.html', context)
@@ -53,26 +57,8 @@ def register(request):
             return redirect("/")
         else:
             request.session['user_id'] = user.id
-            return redirect('/success')
-
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
-
-def success(request):
-    
-    user = User.objects.get(id=request.session['user_id'])
-
-    all_events = Event.objects.order_by('event_date_time', 'popularity_score')
-    categories = Category.objects.order_by('tag')
-
-    context = { 
-        'user': User.objects.get(id=request.session['user_id']),
-        'selected_events': all_events,
-        'categories': categories
-    }
-    
-    return render(request, 'stubhub/home.html', context)
-    
+            request.session['user_name'] = user.first_name
+            return redirect('/')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -86,14 +72,14 @@ def login(request):
     else:
         user = User.objects.get(email=email)
         request.session['user_id'] = user.id
-        return redirect ('/success')
+        request.session['user_name'] = user.first_name
+        return redirect ('/')
 
 #-----------------------------------------------------------------
 #----------------------------------------------------------------
 
 def log_out(request):
-    for sesskey in request.session.keys():
-        del request.session[sesskey]
+    request.session.clear()
     return redirect("/")
 
 #-----------------------------------------------------------------
