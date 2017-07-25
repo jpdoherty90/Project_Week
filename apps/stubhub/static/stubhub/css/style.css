@@ -1,35 +1,82 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700');
+
 *{
     margin: 0px;
     padding:0px;
-    font-family: sans-serif;
+    font-family:'Open Sans', sans-serif;
+}
+a {
+    color: white;
+    text-decoration: none;
+}
+h1.greeting{
+    color:#424242;
+}
+.messages{
+    color: #E57373;
+}
+
+body{
+    background-color: whitesmoke;
 }
 div.container{
     margin:auto;
-    width: 970px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
+
+/* log in page */
+div.reg_content{
+    width:50%;
+    margin:auto;
+    height:400px;
+}
 div.content{
     padding: 20px;
+    background-color: white;
+    margin:10px;
 }
-
-div.nav{
-    height: 70px;
-    background-color: gray;
-    color:white;
-    padding: 15px;
+div.login{
+    display:inline-block;
+    vertical-align:top;
 }
-
-div.nav ul{
+div.register{
     display:inline-block;
     float:right;
+}
+
+/* navigation */
+div.nav{
+    height: 70px;
+    background-color: #00BCD4;
+    color:white;
+    padding-left: 55px;
+    padding-right: 55px;
+}
+div.visitor_nav{
+    display: inline-block;
+}
+
+
+
+div.header_content{
+    margin:auto;
+    margin-left:10px;
+    margin-right:10px;
+}
+div.nav ul{
+    display:inline-block;
+    float: right;
+    margin-top:32px;
 }
 div.nav ul li{
     list-style: none;
     display: inline-block;
+    font-size:13px;
     margin: 10px;
 }
 div.greeting{
     display: inline-block;
 }
-
 

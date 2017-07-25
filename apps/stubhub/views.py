@@ -35,7 +35,7 @@ def register(request):
     if len(errors):
         for tag, error in errors.iteritems():
             messages.add_message(request, messages.ERROR, errors[tag])
-        return redirect("/")
+        return redirect("/log_reg")
     else:
         first =  request.POST['first_name']
         last =  request.POST['last_name']
@@ -106,7 +106,7 @@ def log_reg(request):
 
 def acc_info(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
-                'tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
+                'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
     }
     
     return render (request,"stubhub/acc_info.html",context)
@@ -114,4 +114,5 @@ def acc_info(request):
 def sell_tickets(request):
     context = { 'user': User.objects.get(id=request.session['user_id'])
     }
+
     return render (request,"stubhub/sell_tickets.html",context)
