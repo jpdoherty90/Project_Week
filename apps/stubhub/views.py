@@ -105,9 +105,6 @@ def init_sale(request, parameter):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-
-
-
 def post_tickets(request, parameter):
     
     event_id = parameter
@@ -140,6 +137,9 @@ def ticket_posted(request):
 def log_reg(request):
     return render (request,"stubhub/login.html")
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
 def acc_info(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
@@ -147,8 +147,21 @@ def acc_info(request):
     
     return render (request,"stubhub/acc_info.html",context)
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
 def sell_tickets(request):
     context = { 'user': User.objects.get(id=request.session['user_id'])
     }
 
     return render (request,"stubhub/sell_tickets.html",context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def cart(request):
+    context = { 'user': User.objects.get(id=request.session['user_id'],
+                'cart':Cart.objects.get(shopper__id=request.session['user_id'])
+    }
+
+    return render (request,"stubhub/cart.html",context)

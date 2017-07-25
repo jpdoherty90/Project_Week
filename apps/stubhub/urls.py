@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^login_attempt$', views.login),
     url(r'^success$', views.success),
     url(r'^post_tickets$', views.post_tickets),
+    url(r'^)
+    url(r'^cart$', views.cart),
 ]

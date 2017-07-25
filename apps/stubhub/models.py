@@ -54,7 +54,7 @@ class UserManager(models.Manager):
 
 class TicketManager(models.Manager):
     def post_ticket_validator(self, postData):
-        errors = {}
+        errors = { }
         
         return errors
 
@@ -107,3 +107,15 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = TicketManager()
+
+class Cart(models.Model):
+    shopper= models.Foreignkey(User, related_name="shopper")
+    ticket = models.Foreignkey(Ticket,related_name="items")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    
+
+
+    
