@@ -38,7 +38,9 @@ class UserManager(models.Manager):
         errors = {}
         # See if the e-mail address is already registered - If not, prompt them to create an account
         try:
+            print 'email check'
             user = User.objects.get(email=post_data['email'])
+            print 'email not found'
         except:
             errors['user_not_registered'] = "Sorry, we can't find that e-mail in our system.  Please create an account."
             return errors
