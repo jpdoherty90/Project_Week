@@ -20,16 +20,8 @@
       <input type="submit" value="Search">
       </form>
     </div>
-   
-    <div class="content">
-    <h1 class="greeting">
-    Welcome to TixPix!
-    </h1>
-
-
-    
-    </div>
     <div id='events_list'>
+        <h3>{{num_results}} results for {{query}}</h3>
         {% include 'stubhub/snippets/event_list.html' %}
     </div>
 </body>

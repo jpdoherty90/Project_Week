@@ -17,9 +17,10 @@ import bcrypt
 
 
 def index(request):
-
+    all_events = Event.objects.order_by('event_date_time', 'popularity_score')
+    print all_events
     context = {
-        "test": "test",
+        'selected_events': all_events
     }
 
   
@@ -35,7 +36,7 @@ def register(request):
     if len(errors):
         for tag, error in errors.iteritems():
             messages.add_message(request, messages.ERROR, errors[tag])
-        return redirect("/")
+        return redirect("/log_reg")
     else:
         first =  request.POST['first_name']
         last =  request.POST['last_name']
@@ -145,9 +146,26 @@ def log_reg(request):
 
 def acc_info(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
-                'tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
+                'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
     }
     
     return render (request,"stubhub/acc_info.html",context)
 
+def sell_tickets(request):
+    context = { 'user': User.objects.get(id=request.session['user_id'])
+    }
 
+    return render (request,"stubhub/sell_tickets.html",context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def event_search(request):
+    selected_events = Event.objects.filter(category__tag='mlb')
+    num_results = len(selected_events)
+    context = {
+        'num_results' : num_results,
+        'selected_events': selected_events,
+        'query': 'mlb'
+    }
+    return render(request, 'stubhub/search_results.html', context)

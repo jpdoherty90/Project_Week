@@ -1,26 +1,31 @@
 
 <div class="nav">
-<div class="greeting">
-<h1> TixPix </h1>
-
-{%if user.id %}
-<p>Hello, {{user.first_name}}</p>
-</div>
-<ul>
-        <li><a href="/acc_info">My Acc</a>
-        <li><a href="/log_out">Log Out</a>
-        <li><a href="/sell_tickets">Sell Tickets</a>
-        
-</ul>
-
-{%endif%}
-
-{%if not user.id %}
-<p>Welcome</p>
-<a href="/log_reg">Sign In</a>
-<br>
-{%endif%}
-
+        <div class="header_content">
+                <div class="greeting">
+                {%if user.id %}
+                       <a href="/success"><h1> TixPix </h1></a> 
+                        <p>Hello, {{user.first_name}}!</p>
+                </div>
+                
+                <ul>
+                        <li><a href="/success">Home</a>
+                        <li><a href="/acc_info">My Account</a>
+                        <li><a href="/log_out">Log Out</a>
+                        <li><a href="/sell_tickets">Sell Tickets</a>
+                        <li><a href="/sell_tickets">Cart</a>
+                        
+                </ul>
+                {%endif%}
+                
+                {%if not user.id %}
+                <a href="/"><h1> TixPix </h1></a> 
+                <p>Welcome!</p>
+                </div>
+                <ul>
+                        <li><a href="/log_reg">Sign In</a></li>
+                </ul>
+                {%endif%} 
+        </div>
 </div>
 
 

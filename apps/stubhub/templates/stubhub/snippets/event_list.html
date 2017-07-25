@@ -1,5 +1,8 @@
-{% load static %}
-<script src = {% static "stubhub/seatgeek_api.js" %}></script>
-<div id="events_list">
-</div>
+{% for event in selected_events %}
+    <div class='event'>
+        <h3><a href="sell/{{event.id}}">{{event.title}}</a></h3>
+        <p>{{event.event_date_time}}</p>
+        <p>{{event.venue.name}}</p>
+    </div>
+{% endfor %}
 
