@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User, Ticket, Event, Performer, Venue, Category
+from models import User, Ticket, Event, Performer, Venue, Category, Cart
+
 
 from django.contrib import messages
 
@@ -171,12 +172,18 @@ def ticket_posted(request, parameter):
 def log_reg(request):
     return render (request,"stubhub/login.html")
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
 def acc_info(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
     }
     
     return render (request,"stubhub/acc_info.html",context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
 def sell_tickets(request):
     context = { 'user': User.objects.get(id=request.session['user_id'])
@@ -187,6 +194,14 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
+<<<<<<< HEAD
+def cart(request):
+    context = { 'user': User.objects.get(id=request.session['user_id']),
+                'cart': 'x'
+    }
+
+    return render (request,"stubhub/cart.html",context)
+=======
 def search_results(request):
     search_field = request.session['search_field']
     search_info = request.session['search_info']
@@ -230,6 +245,7 @@ def process_search(request):
         return redirect('/search')
     else:
         return redirect('/')
+<<<<<<< HEAD
 
 
 #-----------------------------------------------------------------
@@ -251,3 +267,6 @@ def show_event(request, parameter):
 #-----------------------------------------------------------------
 
 
+=======
+>>>>>>> 434848257233dfdf13d2c37aed36d12f0561fecb
+>>>>>>> 0de0f8ee65b87490bd51abb29c90f959314be558

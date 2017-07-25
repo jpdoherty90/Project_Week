@@ -15,18 +15,18 @@
     <body>
         <div class="reg_content">
             <div class="login">
-                <h3>Login</h3>
+                <h3 class="grey_text">Login</h3>
                 <form action="/login_attempt" method="POST">
                     {% csrf_token %}
                     Email:<br>
                     <input type="text" name="email"><br>
                     Password:<br>
                     <input type="text" name="password"><br>
-                    <input type="submit" value="Log In">
+                    <input class="button" type="submit" value="Log In">
                 </form>
             </div>
             <div class="register">
-                <h3>Create Account</h3>
+                <h3 class="grey_text">Create Account</h3>
                 <form action="/registration_attempt" method="post">
                     {% csrf_token %}
                     First name:<br>
@@ -39,7 +39,7 @@
                     <input type="text" name="password"><br>
                     Confirm Password:<br>
                     <input type="text" name="confirm"><br>
-                    <input type="submit" value="Create Account">
+                    <input class="button" type="submit" value="Create Account">
                 </form>
             </div>
         {% if messages %}
