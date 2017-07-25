@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User, Ticket, Event #, Performer, Venue
+from models import User, Ticket, Event, Cart #, Performer, Venue
 
 from django.contrib import messages
 
@@ -160,8 +160,8 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 
 def cart(request):
-    context = { 'user': User.objects.get(id=request.session['user_id'],
-                'cart':Cart.objects.get(shopper__id=request.session['user_id'])
+    context = { 'user': User.objects.get(id=request.session['user_id']),
+                'cart': 'x'
     }
 
     return render (request,"stubhub/cart.html",context)
