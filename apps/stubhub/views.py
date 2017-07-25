@@ -153,3 +153,16 @@ def sell_tickets(request):
     }
 
     return render (request,"stubhub/sell_tickets.html",context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def event_search(request):
+    selected_events = Event.objects.filter(category__tag='mlb')
+    num_results = len(selected_events)
+    context = {
+        'num_results' : num_results,
+        'selected_events': selected_events,
+        'query': 'mlb'
+    }
+    return render(request, 'stubhub/search_results.html', context)
