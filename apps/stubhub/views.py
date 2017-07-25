@@ -267,3 +267,17 @@ def show_event(request, parameter):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
+def buy_tix(request, parameter):
+    
+    event = Event.objects.get(id=parameter)
+
+    context = {
+        "event": event,
+    }
+
+    return render(request, 'stubhub/buy_tix.html', context)
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
