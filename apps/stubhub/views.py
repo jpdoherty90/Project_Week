@@ -271,8 +271,11 @@ def buy_tix(request, parameter):
     
     event = Event.objects.get(id=parameter)
 
+    available_tix = Ticket.objects.filter(available=True, event=event)
+
     context = {
         "event": event,
+        "available_tix": available_tix,
     }
 
     return render(request, 'stubhub/buy_tix.html', context)
