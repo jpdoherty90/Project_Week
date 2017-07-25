@@ -2,13 +2,13 @@
 <div class="nav">
         <div class="header_content">
                 <div class="greeting">
-                {%if user.id %}
-                       <a class='nav_link' href="/success"><h1> TixPix </h1></a> 
-                        <p>Hello, {{user.first_name}}!</p>
+                {%if request.session.user_name %}
+                       <a class='nav_link' href="/"><h1> TixPix </h1></a> 
+                        <p>Hello, {{request.session.user_name}}!</p>
                 </div>
                 
                 <ul>
-                        <li><a class='nav_link' href="/success">Home</a>
+                        <li><a class='nav_link' href="/">Home</a>
                         <li><a class='nav_link' href="/acc_info">My Account</a>
                         <li><a class='nav_link' href="/log_out">Log Out</a>
                         <li><a class='nav_link' href="/sell_tickets">Sell Tickets</a>
@@ -16,7 +16,7 @@
                 </ul>
                 {%endif%}
                 
-                {%if not user.id %}
+                {%if not request.session.user_name %}
                 <a class='nav_link' href="/"><h1> TixPix </h1></a> 
                 <p>Welcome!</p>
                 </div>
