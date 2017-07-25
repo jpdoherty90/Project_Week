@@ -69,19 +69,6 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
 
-
-
-
-class Ticket(models.Model):
-    #event = models.ForeignKey(Event)
-    seller = models.ForeignKey(User, related_name="sellers")
-    buyer = models.ForeignKey(User, related_name="buyers")
-    seat = models.CharField(max_length = 128)
-    price = models.DecimalField(max_digits=7, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    objects = TicketManager()
-
 class Venue(models.Model):
     name = models.CharField(max_length = 256)
     address = models.CharField(max_length = 256)
@@ -111,3 +98,12 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Ticket(models.Model):
+    event = models.ForeignKey(Event, related_name="tickets")
+    seller = models.ForeignKey(User, related_name="sellers")
+    buyer = models.ForeignKey(User, related_name="buyers", blank=True, null=True)
+    seat = models.CharField(max_length = 128)
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = TicketManager()

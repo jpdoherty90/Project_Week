@@ -14,14 +14,12 @@
 <div class="container">
 <body>
 
+
     <div class="content">
 
     <h1>Post tickets to sell</h1>
     <form action="/post_tickets" method="post">
         {% csrf_token %}
-        <label for="event">Event: </label>
-        <input type="text" id="event" name="event">
-        <br>
         <label for="seat">Seat: </label>
         <input type="text" id="seat" name="seat">
         <br>
