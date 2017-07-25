@@ -107,7 +107,7 @@ class Ticket(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = TicketManager()
 
-class Cart(models.Model):
+class Purchase(models.Model):
     shopper = models.ForeignKey(User, related_name="shopper")
     items = models.ForeignKey(Ticket,related_name="items")
     created_at = models.DateTimeField(auto_now_add=True)

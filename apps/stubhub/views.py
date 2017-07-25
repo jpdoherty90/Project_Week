@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, HttpResponse
 
 
-from models import User, Ticket, Event, Performer, Venue, Category, Cart
+from models import User, Ticket, Event, Performer, Venue, Category, Purchase
 
 
 from django.contrib import messages
@@ -194,12 +194,51 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 
 def cart(request):
+    item_ids = request.session['cart']
+    items = []
+    total=0
+    for item_id in item_ids:
+        ticket=Ticket.objects.get(id=item_id)
+        items.append(ticket)
+    for ticket in items:
+        total+=int(ticket.price)
+    
+    print total
     context = { 'user': User.objects.get(id=request.session['user_id']),
-                'cart': 'x'
+                'items': items,
+                'total':total,
     }
+    
 
     return render (request,"stubhub/cart.html",context)
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def add_to_cart(request):
+    print'added to cart'
+    request.session.modified = True
+    ticket_id= request.POST['ticket_id']
+    ticket= Ticket.objects.get(id=ticket_id)
+    request.session['cart'].append(ticket_id)
+
+    print request.session['cart']
+    x="/"+str(ticket.event.id)
+    
+    return redirect('/buy'+ x)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def purchase(request):
+    
+    return redirect('/confrimation')
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def confirmation(request):
+    
+    return render(request,'stubhub/confrimation')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -268,11 +307,9 @@ def show_event(request, parameter):
 #-----------------------------------------------------------------
 
 def buy_tix(request, parameter):
-    
     event = Event.objects.get(id=parameter)
 
     available_tix = Ticket.objects.filter(available=True, event=event)
-
     context = {
         "event": event,
         "available_tix": available_tix,

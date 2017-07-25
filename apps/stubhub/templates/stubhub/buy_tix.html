@@ -27,7 +27,11 @@
             <p>Seat {{ ticket.seat }} for {{ ticket.price}}</p>
             <p>for sale by {{ ticket.seller.first_name}} {{ticket.seller.last_name}}</p>
             <br>
-            <a href="" class="basic_button">Add to cart</a>
+            <form action="/add_to_cart" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="ticket_id" value="{{ticket.id}}"><br>
+                    <input class="button" type="submit" value="Add to Cart">
+            </form>
             <br>
             <br>
             <hr>

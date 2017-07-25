@@ -57,6 +57,12 @@ input[type=text], select {
     margin: 4px 2px;
     cursor: pointer;
 }
+td{
+    padding:10px;
+}
+table{
+    margin:auto;
+}
 
 
 /* log in page */

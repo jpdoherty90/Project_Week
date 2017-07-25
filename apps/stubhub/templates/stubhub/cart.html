@@ -15,12 +15,31 @@
 <body>
     <div class="container">
         <div class="content">
-        <h3 class="grey_text">Shopping Cart</h3>
-        <hr>
-
-        <form action="/action" method="POST">
-        <input class="button" type="submit" value="Check Out">
-        </form>
+            <h3 class="grey_text">Shopping Cart</h3>
+            <hr>
+            <div class="cart_content">
+                <table>
+                    <tr>
+                        <th>Event</th>
+                        <th>Price</th>
+                        <th>Venue</th>
+                        <th>Remove</th>
+                    </tr>
+                    {%for ticket in items%}
+                    <tr>
+                        <td>{{ticket.event.title}}</td>
+                        <td>{{ticket.price}}</td>
+                        <td>{{ticket.event.venue.name}}</td>
+                        <td> Remove </td>
+                    </tr>
+                {%endfor%}
+                </table>
+            </div>
+            <hr>
+            <p>TOTAL: {{total}}</p>
+            <form action="/action" method="POST">
+            <input class="button" type="submit" value="Check Out">
+            </form>
         </div>
     </div>
 </body>
