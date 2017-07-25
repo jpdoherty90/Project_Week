@@ -27,7 +27,6 @@ def index(request):
         'categories': categories
     }
 
-  
     return render(request, 'stubhub/home.html', context)
 
 
@@ -118,8 +117,7 @@ def init_sale(request, parameter):
 
         for i in range(1, int(num_tix) + 1):
             tix.append(i)
-
-
+            
         context['tix'] = tix
         context['num_tix'] = num_tix
 
@@ -195,13 +193,13 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-
 def cart(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'cart': 'x'
     }
 
     return render (request,"stubhub/cart.html",context)
+
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -249,4 +247,23 @@ def process_search(request):
         return redirect('/search')
     else:
         return redirect('/')
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+
+def show_event(request, parameter):
+    
+    event = Event.objects.get(id=parameter)
+
+    context = {
+        "event": event,
+    }
+
+    return render(request, 'stubhub/show_event.html', context)
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 

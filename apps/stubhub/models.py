@@ -87,6 +87,7 @@ class Event(models.Model):
     event_date_time = models.DateTimeField()
     visible_until = models.DateTimeField(default='0000-00-00 00:00[:00[.000000]][PM]')
     popularity_score = models.FloatField()
+    image = models.CharField(max_length = 512, blank=True, null=True)
     venue = models.ForeignKey(Venue, related_name='events')
     performers = models.ManyToManyField(Performer, related_name='events')
     category = models.ForeignKey(Category, related_name='events')
