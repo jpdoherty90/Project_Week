@@ -185,12 +185,12 @@ def sell_tickets(request):
 def search_results(request):
     search_field = request.session['search_field']
     search_info = request.session['search_info']
-    if search_field == 'name':
-        selected_events = Events.objects.filter(name__contains=search_info)
-    elif search_field == 'venue':
-        selected_events = Event.objects.filter(venue__name__contains=search_info)
-    elif search_field == 'performer':
-        selected_events = Event.objects.filter(performer__name__contains=search_info)
+    print '*'*50
+    print search_field
+    print search_info
+    print '*'*50
+    if search_field == 'text':
+        selected_events = Event.objects.filter(title__contains=search_info)|Event.objects.filter(venue__name__contains=search_info)|Event.objects.filter(performers__name__contains=search_info)
     elif search_field == 'category':
         selected_events = Event.objects.filter(category__tag=search_info)
     elif search_field == 'date':
@@ -212,19 +212,7 @@ def process_search(request):
     if request.method == 'POST':
         if len(request.POST['text_search'])>0:
             search_info=request.POST['text_search']
-            try:
-                Event.objects.filter(name__contains=search_info)
-                request.session['search_field']= 'name'
-            except:
-                try:
-                    Venue.objects.filter(name__contains=search_info)
-                    request.session['search_field']= 'venue'
-                except:
-                    try:
-                        Perfomer.objects.filter(name__contains=search_info)
-                        request.session['search_field']= 'performer'
-                    except:
-                        selected_events = []
+            request.session['search_field']='text'
         elif len(request.POST['event_date'])>0:
             search_info = request.POST['event_date']
             request.session['search_field']= 'date'
