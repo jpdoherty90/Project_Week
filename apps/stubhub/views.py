@@ -126,8 +126,6 @@ def init_sale(request, parameter):
 #-----------------------------------------------------------------
 
 
-
-
 def post_tickets(request, parameter):
     
     event_id = parameter
@@ -146,18 +144,8 @@ def post_tickets(request, parameter):
 
         Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
 
-
-    # seat = request.POST['seat']
-    # price = request.POST['price']
-
-    # new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
-
     url = '/ticket_posted/'
     url += str(parameter)
-
-    print"-"*50
-    print url
-    print"-"*50
 
     return redirect(url)
 
@@ -174,10 +162,6 @@ def ticket_posted(request, parameter):
     context = {
         "event": event,
     }
-
-    print"-"*50
-    print parameter, context
-    print"-"*50
 
     return render(request, 'stubhub/sell_success.html', context)
     
