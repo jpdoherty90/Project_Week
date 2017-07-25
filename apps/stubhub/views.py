@@ -105,11 +105,24 @@ def init_sale(request, parameter):
         "event": event,
     }
 
+    if request.method == "POST":
+
+        num_tix = request.POST['num_tix']
+
+        tix = []
+
+        for i in range(1, int(num_tix) + 1):
+            tix.append(i)
+
+        context['tix'] = tix
+        context['num_tix'] = num_tix
+
     return render(request, 'stubhub/init_sale.html', context)
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 
 def post_tickets(request, parameter):
@@ -120,10 +133,21 @@ def post_tickets(request, parameter):
     seller_id = request.session['user_id']
     seller = User.objects.get(id=seller_id)
 
-    seat = request.POST['seat']
+    num_tix = request.POST['num_tix']
     price = request.POST['price']
 
-    new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
+    for i in range(int(num_tix)):
+        
+        seat_num = "seat_" + str(i+1) 
+        seat = request.POST[seat_num]
+
+        Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
+
+
+    # seat = request.POST['seat']
+    # price = request.POST['price']
+
+    # new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
 
     url = '/ticket_posted/'
     url += str(parameter)
