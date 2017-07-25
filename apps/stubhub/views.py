@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User, Ticket, Event #, Performer, Venue
+from models import User, Ticket, Event, Performer, Venue, Category
 
 from django.contrib import messages
 
@@ -18,9 +18,10 @@ import bcrypt
 
 def index(request):
     all_events = Event.objects.order_by('event_date_time', 'popularity_score')
-    print all_events
+    categories = Category.objects.order_by('tag')
     context = {
-        'selected_events': all_events
+        'selected_events': all_events,
+        'categories': categories
     }
 
   
@@ -157,7 +158,7 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-def event_search(request):
+def search_results(request):
     selected_events = Event.objects.filter(category__tag='mlb')
     num_results = len(selected_events)
     context = {

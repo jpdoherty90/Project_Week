@@ -14,12 +14,7 @@
 
 <div class="container">
 <body>
-    <div class="content">
-      <form action="/action_page.php" method="POST">
-      <input type="text" name="search_term" placeholder="Find an Event">
-      <input type="submit" value="Search">
-      </form>
-    </div>
+    {% include 'stubhub/snippets/search_bar.html' %}
    
     <div class="content">
     <h1 class="greeting">
