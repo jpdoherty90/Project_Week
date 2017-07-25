@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
+
 from models import User, Ticket, Event, Performer, Venue, Category, Cart
 
 
@@ -118,8 +119,7 @@ def init_sale(request, parameter):
         for i in range(1, int(num_tix) + 1):
             tix.append(i)
 
-<<<<<<< HEAD
-=======
+
         context['tix'] = tix
         context['num_tix'] = num_tix
 
@@ -128,8 +128,6 @@ def init_sale(request, parameter):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-
->>>>>>> 434848257233dfdf13d2c37aed36d12f0561fecb
 def post_tickets(request, parameter):
     
     event_id = parameter
@@ -168,9 +166,6 @@ def ticket_posted(request, parameter):
     }
 
     return render(request, 'stubhub/sell_success.html', context)
-    
-
-
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -200,14 +195,17 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-<<<<<<< HEAD
+
 def cart(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'cart': 'x'
     }
 
     return render (request,"stubhub/cart.html",context)
-=======
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
 def search_results(request):
     search_field = request.session['search_field']
     search_info = request.session['search_info']
@@ -251,4 +249,4 @@ def process_search(request):
         return redirect('/search')
     else:
         return redirect('/')
->>>>>>> 434848257233dfdf13d2c37aed36d12f0561fecb
+
