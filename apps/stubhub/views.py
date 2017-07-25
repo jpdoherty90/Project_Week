@@ -194,14 +194,18 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-<<<<<<< HEAD
 def cart(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'cart': 'x'
     }
 
     return render (request,"stubhub/cart.html",context)
-=======
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+
 def search_results(request):
     search_field = request.session['search_field']
     search_info = request.session['search_info']
@@ -245,7 +249,6 @@ def process_search(request):
         return redirect('/search')
     else:
         return redirect('/')
-<<<<<<< HEAD
 
 
 #-----------------------------------------------------------------
@@ -265,8 +268,3 @@ def show_event(request, parameter):
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
-
-
-=======
->>>>>>> 434848257233dfdf13d2c37aed36d12f0561fecb
->>>>>>> 0de0f8ee65b87490bd51abb29c90f959314be558
