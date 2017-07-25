@@ -188,8 +188,8 @@ def cart(request):
         items.append(ticket)
     for ticket in items:
         total+=int(ticket.price)
-    
-    print total
+        print ticket.available
+
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'items': items,
                 'total':total,
@@ -202,12 +202,15 @@ def cart(request):
 #-----------------------------------------------------------------
 
 def add_to_cart(request):
-    print'added to cart'
+    if 'cart' not in request.session:
+        request.session['cart']=[]
     request.session.modified = True
     ticket_id= request.POST['ticket_id']
-    ticket= Ticket.objects.get(id=ticket_id)
-    request.session['cart'].append(ticket_id)
+    ticket = Ticket.objects.get(id=ticket_id)
+    Ticket.objects.filter(id=ticket_id).update(available=False)
 
+    request.session['cart'].append(ticket_id)
+    print ticket.available
     print request.session['cart']
     x="/"+str(ticket.event.id)
     
