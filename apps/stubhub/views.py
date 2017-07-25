@@ -271,7 +271,19 @@ def buy_tix(request, parameter):
     
     event = Event.objects.get(id=parameter)
 
-    available_tix = Ticket.objects.filter(available=True, event=event)
+    if request.method == "GET":
+        available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat")
+
+    elif request.method == "POST":
+        if request.POST['filter_by'] == "seat":
+            available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat")
+        elif request.POST['filter_by'] == "price_asc":
+            available_tix = Ticket.objects.filter(available=True, event=event).order_by("price")
+        elif request.POST['filter_by'] == "price_desc":
+            available_tix = Ticket.objects.filter(available=True, event=event).order_by("-price")
+        elif request.POST['filter_by'] == "best_value":
+            available_tix = Ticket.objects.filter(available=True, event=event).order_by("price")
+
 
     context = {
         "event": event,

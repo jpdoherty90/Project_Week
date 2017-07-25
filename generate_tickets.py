@@ -12,5 +12,5 @@ def get_rand_seat():
 
 
 fixture = AutoFixture(Ticket, field_values = {'price': get_rand_price, 'seat': get_rand_seat, 'buyer':None})
-for x in range (0,100):
+for x in range (0, 5000):
     entry = fixture.create(1)
