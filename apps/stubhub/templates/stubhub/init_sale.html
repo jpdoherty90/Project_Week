@@ -10,17 +10,14 @@
 </head>
 <div class="container">
 <body>
-<<<<<<< HEAD:apps/stubhub/templates/stubhub/init_sale.html
-    <h1>Sell a ticket to {{ event.title }}:</h1>
-    <form action="/sell/{{event.id}}/post_tickets" method="post">
-=======
+
 
     {% include 'stubhub/snippets/nav.html' %}
     <div class="content">
 
-    <h1>Post tickets to sell</h1>
-    <form action="/post_tickets" method="post">
->>>>>>> 2cf4488e9673167d9cee13f6f240a87e7ccf60d1:apps/stubhub/templates/stubhub/sell_tickets.html
+    <h1>Sell a ticket to {{ event.title }}:</h1>
+    <form action="/sell/{{event.id}}/post_tickets" method="post">
+
         {% csrf_token %}
         <label for="seat">Seat: </label>
         <input type="text" id="seat" name="seat">

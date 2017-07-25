@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User, Ticket, Event #, Performer, Venue
+from models import User, Ticket, Event, Performer, Venue, Category
 
 from django.contrib import messages
 
@@ -121,7 +121,10 @@ def post_tickets(request, parameter):
 
     new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
 
-    return redirect('/ticket_posted')
+    url = '/ticket_posted/'
+    url += str(parameter)
+
+    return redirect(url)
 
 
 # #-----------------------------------------------------------------
@@ -147,7 +150,4 @@ def acc_info(request):
     
     return render (request,"stubhub/acc_info.html",context)
 
-def sell_tickets(request):
-    context = { 'user': User.objects.get(id=request.session['user_id'])
-    }
-    return render (request,"stubhub/sell_tickets.html",context)
+

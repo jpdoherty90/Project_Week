@@ -90,7 +90,7 @@ class Event(models.Model):
     title = models.CharField(max_length = 256)
     short_title = models.CharField(max_length = 256)
     event_date_time = models.DateTimeField()
-    visible_until = models.DateTimeField()
+    visible_until = models.DateTimeField(default='0000-00-00 00:00[:00[.000000]][PM]')
     popularity_score = models.FloatField()
     venue = models.ForeignKey(Venue, related_name='events')
     performers = models.ManyToManyField(Performer, related_name='events')
