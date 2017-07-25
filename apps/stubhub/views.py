@@ -62,10 +62,12 @@ def success(request):
     user = User.objects.get(id=request.session['user_id'])
 
     all_events = Event.objects.order_by('event_date_time', 'popularity_score')
+    categories = Category.objects.order_by('tag')
 
     context = { 
         'user': User.objects.get(id=request.session['user_id']),
         'selected_events': all_events,
+        'categories': categories
     }
     
     return render(request, 'stubhub/home.html', context)
@@ -181,11 +183,57 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 
 def search_results(request):
-    selected_events = Event.objects.filter(category__tag='mlb')
+    search_field = request.session['search_field']
+    search_info = request.session['search_info']
+    if search_field == 'name':
+        selected_events = Events.objects.filter(name__contains=search_info)
+    elif search_field == 'venue':
+        selected_events = Event.objects.filter(venue__name__contains=search_info)
+    elif search_field == 'performer':
+        selected_events = Event.objects.filter(performer__name__contains=search_info)
+    elif search_field == 'category':
+        selected_events = Event.objects.filter(category__tag=search_info)
+    elif search_field == 'date':
+            selected_events = Event.objects.filter(event_date_time__contains=search_info)    
     num_results = len(selected_events)
+    categories = Category.objects.order_by('tag')
     context = {
         'num_results' : num_results,
         'selected_events': selected_events,
-        'query': 'mlb'
+        'query': search_info,
+        'categories': categories
     }
     return render(request, 'stubhub/search_results.html', context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def process_search(request):
+    if request.method == 'POST':
+        if len(request.POST['text_search'])>0:
+            search_info=request.POST['text_search']
+            try:
+                Event.objects.filter(name__contains=search_info)
+                request.session['search_field']= 'name'
+            except:
+                try:
+                    Venue.objects.filter(name__contains=search_info)
+                    request.session['search_field']= 'venue'
+                except:
+                    try:
+                        Perfomer.objects.filter(name__contains=search_info)
+                        request.session['search_field']= 'performer'
+                    except:
+                        selected_events = []
+        elif len(request.POST['event_date'])>0:
+            search_info = request.POST['event_date']
+            request.session['search_field']= 'date'
+        elif len(request.POST['category'])>0:
+            search_info = request.POST['category']
+            request.session['search_field'] = 'category'
+        else:
+            return redirect('/')
+        request.session['search_info'] = search_info
+        return redirect('/search')
+    else:
+        return redirect('/')
