@@ -15,6 +15,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Cart',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Category',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -104,5 +112,15 @@ class Migration(migrations.Migration):
             model_name='event',
             name='venue',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to='stubhub.Venue'),
+        ),
+        migrations.AddField(
+            model_name='cart',
+            name='items',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='stubhub.Ticket'),
+        ),
+        migrations.AddField(
+            model_name='cart',
+            name='shopper',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='shopper', to='stubhub.User'),
         ),
     ]

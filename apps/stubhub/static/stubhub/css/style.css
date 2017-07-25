@@ -25,6 +25,9 @@
 body{
     background-color: whitesmoke;
 }
+h3{
+    color: grey;
+}
 div.container{
     margin:auto;
     padding-left: 50px;

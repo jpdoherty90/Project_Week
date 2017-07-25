@@ -50,15 +50,10 @@ class UserManager(models.Manager):
         return errors
 
 
-
-
 class TicketManager(models.Manager):
     def post_ticket_validator(self, postData):
         errors = { }
-        
         return errors
-
-
 
 class User(models.Model):
     first_name = models.CharField(max_length = 128)
