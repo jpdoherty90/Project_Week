@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-from models import User, Ticket, Event, Cart #, Performer, Venue
+from models import User, Ticket, Event, Performer, Venue, Category, Cart
+
 
 from django.contrib import messages
 
@@ -17,9 +18,12 @@ import bcrypt
 
 
 def index(request):
-
+    
+    all_events = Event.objects.order_by('event_date_time', 'popularity_score')
+    categories = Category.objects.order_by('tag')
     context = {
-        "test": "test",
+        'selected_events': all_events,
+        'categories': categories
     }
 
   
@@ -58,7 +62,13 @@ def success(request):
     
     user = User.objects.get(id=request.session['user_id'])
 
-    context = { 'user': User.objects.get(id=request.session['user_id'])
+    all_events = Event.objects.order_by('event_date_time', 'popularity_score')
+    categories = Category.objects.order_by('tag')
+
+    context = { 
+        'user': User.objects.get(id=request.session['user_id']),
+        'selected_events': all_events,
+        'categories': categories
     }
     
     return render(request, 'stubhub/home.html', context)
@@ -99,12 +109,27 @@ def init_sale(request, parameter):
         "event": event,
     }
 
-    return render(request, '/stubhub/init_sale.html', context)
+    if request.method == "POST":
 
+        num_tix = request.POST['num_tix']
+
+        tix = []
+
+        for i in range(1, int(num_tix) + 1):
+            tix.append(i)
+
+<<<<<<< HEAD
+=======
+        context['tix'] = tix
+        context['num_tix'] = num_tix
+
+    return render(request, 'stubhub/init_sale.html', context)
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
+
+>>>>>>> 434848257233dfdf13d2c37aed36d12f0561fecb
 def post_tickets(request, parameter):
     
     event_id = parameter
@@ -113,20 +138,36 @@ def post_tickets(request, parameter):
     seller_id = request.session['user_id']
     seller = User.objects.get(id=seller_id)
 
-    seat = request.POST['seat']
+    num_tix = request.POST['num_tix']
     price = request.POST['price']
 
-    new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
+    for i in range(int(num_tix)):
+        
+        seat_num = "seat_" + str(i+1) 
+        seat = request.POST[seat_num]
 
-    return redirect('/ticket_posted')
+        Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
+
+    url = '/ticket_posted/'
+    url += str(parameter)
+
+    return redirect(url)
 
 
-# #-----------------------------------------------------------------
-# #-----------------------------------------------------------------
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
 
-def ticket_posted(request):
-    return render(request, 'sell_success.html')
+def ticket_posted(request, parameter):
+    
+    event_id = parameter
+    event = Event.objects.get(id=event_id)
+    
+    context = {
+        "event": event,
+    }
+
+    return render(request, 'stubhub/sell_success.html', context)
     
 
 
@@ -159,9 +200,55 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
+<<<<<<< HEAD
 def cart(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'cart': 'x'
     }
 
     return render (request,"stubhub/cart.html",context)
+=======
+def search_results(request):
+    search_field = request.session['search_field']
+    search_info = request.session['search_info']
+    print '*'*50
+    print search_field
+    print search_info
+    print '*'*50
+    if search_field == 'text':
+        selected_events = Event.objects.filter(title__contains=search_info)|Event.objects.filter(venue__name__contains=search_info)|Event.objects.filter(performers__name__contains=search_info)
+    elif search_field == 'category':
+        selected_events = Event.objects.filter(category__tag=search_info)
+    elif search_field == 'date':
+            selected_events = Event.objects.filter(event_date_time__contains=search_info)    
+    num_results = len(selected_events)
+    categories = Category.objects.order_by('tag')
+    context = {
+        'num_results' : num_results,
+        'selected_events': selected_events,
+        'query': search_info,
+        'categories': categories
+    }
+    return render(request, 'stubhub/search_results.html', context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def process_search(request):
+    if request.method == 'POST':
+        if len(request.POST['text_search'])>0:
+            search_info=request.POST['text_search']
+            request.session['search_field']='text'
+        elif len(request.POST['event_date'])>0:
+            search_info = request.POST['event_date']
+            request.session['search_field']= 'date'
+        elif len(request.POST['category'])>0:
+            search_info = request.POST['category']
+            request.session['search_field'] = 'category'
+        else:
+            return redirect('/')
+        request.session['search_info'] = search_info
+        return redirect('/search')
+    else:
+        return redirect('/')
+>>>>>>> 434848257233dfdf13d2c37aed36d12f0561fecb

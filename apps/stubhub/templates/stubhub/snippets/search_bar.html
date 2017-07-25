@@ -1,0 +1,23 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<div id='search_bar'>
+    <form action="/process_search" method='post'>
+        {% csrf_token %}
+        <div id='text_search'>
+            <input type="text" name='text_search' placeholder='Search for events, artists, teams, or venues'>
+        </div>
+        <div id='select_search'>
+            <p>-- Search by Category --
+            <select name='category' onchange="this.form.submit()">
+                    <option disabled selected value>Select</option>
+                    {% for category in categories %}
+                        <option value="{{category.tag}}">{{category.tag}}</option>
+                    {% endfor %}
+            </select>
+            <label for='event_date'>-- Search by Date --</label>
+            <input type='date' name='event_date' onchange="this.form.submit()"></p>
+    </form>
+</div>
+
+
+
+    
