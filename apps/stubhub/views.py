@@ -17,6 +17,7 @@ import bcrypt
 
 
 def index(request):
+    
     all_events = Event.objects.order_by('event_date_time', 'popularity_score')
     categories = Category.objects.order_by('tag')
     context = {
@@ -60,7 +61,11 @@ def success(request):
     
     user = User.objects.get(id=request.session['user_id'])
 
-    context = { 'user': User.objects.get(id=request.session['user_id'])
+    all_events = Event.objects.order_by('event_date_time', 'popularity_score')
+
+    context = { 
+        'user': User.objects.get(id=request.session['user_id']),
+        'selected_events': all_events,
     }
     
     return render(request, 'stubhub/home.html', context)
@@ -101,13 +106,11 @@ def init_sale(request, parameter):
         "event": event,
     }
 
-    return render(request, '/stubhub/init_sale.html', context)
+    return render(request, 'stubhub/init_sale.html', context)
 
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
-
-
 
 
 def post_tickets(request, parameter):
@@ -123,15 +126,34 @@ def post_tickets(request, parameter):
 
     new_ticket = Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
 
-    return redirect('/ticket_posted')
+    url = '/ticket_posted/'
+    url += str(parameter)
+
+    print"-"*50
+    print url
+    print"-"*50
+
+    return redirect(url)
 
 
-# #-----------------------------------------------------------------
-# #-----------------------------------------------------------------
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
 
-def ticket_posted(request):
-    return render(request, 'sell_success.html')
+def ticket_posted(request, parameter):
+    
+    event_id = parameter
+    event = Event.objects.get(id=event_id)
+    
+    context = {
+        "event": event,
+    }
+
+    print"-"*50
+    print parameter, context
+    print"-"*50
+
+    return render(request, 'stubhub/sell_success.html', context)
     
 
 
