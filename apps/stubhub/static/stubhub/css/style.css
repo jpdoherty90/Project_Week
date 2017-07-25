@@ -131,5 +131,11 @@ input.search{
     width: 250px;
 }
 
+.event_image {
+    height: 400px;
+    width: auto;
+    margin: 30px;
+    padding: 30px;
+}
 
 
