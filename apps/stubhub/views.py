@@ -25,7 +25,6 @@ def index(request):
         'categories': categories
     }
 
-  
     return render(request, 'stubhub/home.html', context)
 
 
@@ -166,8 +165,6 @@ def ticket_posted(request, parameter):
     return render(request, 'stubhub/sell_success.html', context)
     
 
-
-
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -233,3 +230,24 @@ def process_search(request):
         return redirect('/search')
     else:
         return redirect('/')
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+
+def show_event(request, parameter):
+    
+    event = Event.objects.get(id=parameter)
+
+    context = {
+        "event": event,
+    }
+
+    return render(request, 'stubhub/show_event.html', context)
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+

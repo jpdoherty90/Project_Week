@@ -80,3 +80,15 @@ div.greeting{
     display: inline-block;
 }
 
+.basic_button {
+    background: lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    text-decoration: none;
+    color: black;
+    margin-top: 10px;
+    height: 15px;
+    line-height: 15px;
+    border: 1px solid gray;
+    margin-left: 10px;
+}
