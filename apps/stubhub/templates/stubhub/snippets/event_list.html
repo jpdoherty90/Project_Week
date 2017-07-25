@@ -1,5 +1,6 @@
 {% for event in selected_events %}
     <div class='event'>
+        <img src="{{event.image}}" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'">
         <h3><a href="event/{{event.id}}">{{event.title}}</a></h3>
         <p>{{event.event_date_time}}</p>
         <p>{{event.venue.name}}</p>

@@ -66,6 +66,7 @@ for event in all_events:
     event_date_time = datetime.strptime(event['datetime_local'], "%Y-%m-%dT%H:%M:%S")
     visible_until = datetime.strptime(event['visible_until_utc'], "%Y-%m-%dT%H:%M:%S")
     popularity_score = event['score']
+    image = event['performers'][0]['image']
     category = Category.objects.get(tag = event['type'])
     event_venue=event['venue']['name']
     try:
@@ -78,7 +79,7 @@ for event in all_events:
     try:
         Event.objects.get(title=title)
     except:
-        this_event = Event.objects.create(title=title, short_title=short_title, event_date_time=event_date_time, visible_until=visible_until, popularity_score=popularity_score, category=category, venue=venue)
+        this_event = Event.objects.create(title=title, short_title=short_title, event_date_time=event_date_time, visible_until=visible_until, popularity_score=popularity_score, category=category, venue=venue, image=image)
         for performer in event['performers']:
             try:
                 performer = Performer.objects.get(name=name)
