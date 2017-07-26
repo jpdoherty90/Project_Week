@@ -164,14 +164,27 @@ def log_reg(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-def acc_info(request):
+def acc_info(request, parameter):
+    
+    user = User.objects.get(id=parameter)
+
+    tickets_for_sale = Ticket.objects.filter(seller=user, available=True)
+
+    tickets_sold = Ticket.objects.filter(seller=user, available=False)
+
+    tickets_bought = Ticket.objects.filter(buyer=user, available=False)
     
     context = { 
-        'user': User.objects.get(id=request.session['user_id']),
-        'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
+        'user': user,
+        'tickets_for_sale': tickets_for_sale,
+        'tickets_sold': tickets_sold,
+        'tickets_bought': tickets_bought,
     }
-    
-    return render (request,"stubhub/acc_info.html",context)
+
+    if 'user_id' in request.session and request.session['user_id'] == user.id:
+        return render(request,"stubhub/acc_info.html",context)
+    else:
+        return render(request,"stubhub/show_user.html",context)
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
