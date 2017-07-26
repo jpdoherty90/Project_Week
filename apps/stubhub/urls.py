@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^cart$', views.cart),
     url(r'^payment_shipping$', views.payment_shipping),
     url(r'^purchase$', views.purchase),
+    url(r'^order_review$', views.order_review),
 
     url(r'^search$', views.search_results),  
     url(r'^process_search$', views.process_search), 

@@ -112,6 +112,9 @@ div.nav ul li{
     font-size:13px;
     margin: 10px;
 }
+ul.billing li{
+     list-style: none;
+}
 div.greeting{
     display: inline-block;
 }

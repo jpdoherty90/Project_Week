@@ -247,6 +247,7 @@ def check_out(request):
     item_ids = request.session['cart']
     print request.session['cart']
     items = []
+    request.session['total']= total
     total=0
     for item_id in item_ids:
         ticket=Ticket.objects.get(id=item_id)
@@ -254,7 +255,7 @@ def check_out(request):
     for ticket in items:
         total+=int(ticket.price)
         print ticket.available
-
+    
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'items': items,
                 'total':total,
@@ -263,11 +264,25 @@ def check_out(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 def payment_shipping (request):
-   
+    
     return render(request,'stubhub/payment_shipping.html')
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
+def order_review(request):
+    items = []
+    item_ids = request.session['cart']
+    for item_id in item_ids:
+        ticket=Ticket.objects.get(id=item_id)
+        items.append(ticket)
+    
+    context = { 'user': User.objects.get(id=request.session['user_id']),
+                'items': items,
+                'total':total,
+    }
+    return render(request,'stubhub/order_review.html')
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 def purchase(request):
     
     return redirect('/confrimation')
