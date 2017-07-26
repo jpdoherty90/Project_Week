@@ -30,14 +30,20 @@
                         <td>{{ticket.event.title}}</td>
                         <td>{{ticket.price}}</td>
                         <td>{{ticket.event.venue.name}}</td>
-                        <td> Remove </td>
+                        <td>
+                            <form action="/remove_from_cart/{{ticket.id}}" method="POST">
+                                {% csrf_token %}
+                                <input class="link" type="submit" value="Remove from cart">
+                            </form>
+                        </td>
                     </tr>
-                {%endfor%}
+                    {%endfor%}
                 </table>
             </div>
             <hr>
             <p>TOTAL: {{total}}</p>
-            <form action="/action" method="POST">
+            <form action="/check_out" method="POST">
+            {% csrf_token %}
             <input class="button" type="submit" value="Check Out">
             </form>
         </div>
