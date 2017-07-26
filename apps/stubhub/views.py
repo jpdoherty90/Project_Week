@@ -161,8 +161,10 @@ def log_reg(request):
 #-----------------------------------------------------------------
 
 def acc_info(request):
-    context = { 'user': User.objects.get(id=request.session['user_id']),
-                'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
+    
+    context = { 
+        'user': User.objects.get(id=request.session['user_id']),
+        'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
     }
     
     return render (request,"stubhub/acc_info.html",context)
