@@ -348,8 +348,14 @@ def buy_tix(request, parameter):
     
     event = Event.objects.get(id=parameter)
 
+    curr_user_id = 0
+    try:
+        curr_user_id = request.session['user_id']
+    except:
+        curr_user_id = -1
+
     if request.method == "GET":
-        available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat_letter").order_by("seat_num")
+        available_tix = Ticket.objects.filter(available=True, event=event).exclude(seller=curr_user_id).order_by("seat_letter").order_by("seat_num")
 
     elif request.method == "POST":
         if request.POST['filter_by'] == "seat":
