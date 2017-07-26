@@ -3,9 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 
-
 from models import User, Ticket, Event, Performer, Venue, Category, Purchase
-
 
 from django.contrib import messages
 
@@ -125,10 +123,16 @@ def post_tickets(request, parameter):
 
     for i in range(int(num_tix)):
         
-        seat_num = "seat_" + str(i+1) 
-        seat = request.POST[seat_num]
-
-        Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
+        seat = "seat_" + str(i+1) 
+        seat = request.POST[seat]
+        
+        reg = re.compile(r'(?P<numbers>\d*)(?P<letters>.*)')
+        result = reg.search(seat)
+        if result:
+            numbers = result.group('numbers')
+            letters = result.group('letters')
+        
+        Ticket.objects.create(event=event, seller=seller, seat_num=numbers, seat_letter=letters, price=price)
 
     url = '/ticket_posted/'
     url += str(parameter)
@@ -173,7 +177,9 @@ def acc_info(request):
 #-----------------------------------------------------------------
 
 def sell_tickets(request):
-    context = { 'user': User.objects.get(id=request.session['user_id'])
+    
+    context = { 
+        'user': User.objects.get(id=request.session['user_id'])
     }
 
     return render (request,"stubhub/sell_tickets.html",context)
@@ -339,14 +345,15 @@ def show_event(request, parameter):
 #-----------------------------------------------------------------
 
 def buy_tix(request, parameter):
+    
     event = Event.objects.get(id=parameter)
 
     if request.method == "GET":
-        available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat")
+        available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat_letter").order_by("seat_num")
 
     elif request.method == "POST":
         if request.POST['filter_by'] == "seat":
-            available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat")
+            available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat_letter").order_by("seat_num")
         elif request.POST['filter_by'] == "price_asc":
             available_tix = Ticket.objects.filter(available=True, event=event).order_by("price")
         elif request.POST['filter_by'] == "price_desc":
