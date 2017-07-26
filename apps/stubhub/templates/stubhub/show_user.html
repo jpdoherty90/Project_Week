@@ -12,13 +12,10 @@
     {% include 'stubhub/snippets/nav.html' %}
     <div class="container">
 
-
-        <h1>Your Profile</h1>
-
-        <p>Name: {{user.first_name}} {{user.last_name}}</p>
+        <h1>{{user.first_name}} {{user.last_name}}</h1>
 
         {% if tickets_for_sale %}
-            <h2>Current tickets for sale:</h2>
+            <h2>Current tickets {{user.first_name}} {{user.last_name}} has for sale:</h2>
             <hr>
             {% for ticket in tickets_for_sale %}
                 <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }}</p>
@@ -32,7 +29,7 @@
 
 
         {% if tickets_sold %}
-            <h2>Tickets you've sold in the past:</h2>
+            <h2>Tickets sold by {{user.first_name}} {{user.last_name}} in the past:</h2>
             <hr>
             {% for ticket in tickets_sold %}
                 <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }}</p>
@@ -47,7 +44,7 @@
 
 
         {% if tickets_bought %}
-            <h2>Tickets you've bought in the past:</h2>
+            <h2>Tickets bought by {{user.first_name}} {{user.last_name}} in the past:</h2>
             <hr>
             {% for ticket in tickets_bought %}
                 <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }}</p>
