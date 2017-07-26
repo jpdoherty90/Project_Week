@@ -4,19 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
+     <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">    
     <title>Document</title>
 </head>
+
+
+{% include 'stubhub/snippets/nav.html' %}
 <body>
-    <form action="/your-server-side-code" method="POST">
-<script
-  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-  data-key="pk_test_P7XBo6zCHdoP2TEwURJdKgkh"
-  data-amount="2000"
-  data-name="Demo Site"
-  data-description="2 widgets"
-  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-  data-locale="auto">
-</script>
-</form>
+    <div class="container">
+        <div class="content">
+            <h3 class="grey_text">Purchase Summary</h3>
+            <hr>
+            <div class="cart_content">
+                <table>
+                    <tr>
+                        <th>Event</th>
+                        <th>Venue</th>
+                        <th>Price</th>
+                    </tr>
+                    {%for ticket in items%}
+                    <tr>
+                        <td>{{ticket.event.title}}</td>
+                        <td>{{ticket.event.venue.name}}</td>
+                        <td>{{ticket.price}}</td>
+                    </tr>
+                    {%endfor%}
+                </table>
+            </div>
+            <hr>
+            <div class="checkout_cta">
+                <h3>TOTAL: {{total}}</h3>
+                <form action="/payment_shipping" method="POST">
+                    {% csrf_token %}
+                <input class="button" type="submit" value="To Payment/Shipping">
+                </form>
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>

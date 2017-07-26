@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, HttpResponse
 
 
-from models import User, Ticket, Event, Performer, Venue, Category, Cart
+from models import User, Ticket, Event, Performer, Venue, Category, Purchase
 
 
 from django.contrib import messages
@@ -182,12 +182,95 @@ def sell_tickets(request):
 #-----------------------------------------------------------------
 
 def cart(request):
+    request.session.modified = True
+    if 'cart' not in request.session:
+        request.session['cart']=[]
+    item_ids = request.session['cart']
+    print request.session['cart']
+    items = []
+    total=0
+    for item_id in item_ids:
+        ticket=Ticket.objects.get(id=item_id)
+        items.append(ticket)
+    for ticket in items:
+        total+=int(ticket.price)
+        print ticket.available
+
     context = { 'user': User.objects.get(id=request.session['user_id']),
-                'cart': 'x'
+                'items': items,
+                'total':total,
     }
+    
 
     return render (request,"stubhub/cart.html",context)
 
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def add_to_cart(request):
+    if 'cart' not in request.session:
+        request.session['cart']=[]
+    request.session.modified = True
+    ticket_id= request.POST['ticket_id']
+    ticket = Ticket.objects.get(id=ticket_id)
+    Ticket.objects.filter(id=ticket_id).update(available=False)
+   
+    request.session['cart'].append(ticket_id)
+    x="/"+str(ticket.event.id)
+    
+    return redirect('/buy'+ x)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def remove_from_cart(request,parameter):
+    request.session.modified = True
+    ticket_id=parameter
+    request.session['cart'].remove(ticket_id)
+    items=request.session['cart']
+    Ticket.objects.filter(id=ticket_id).update(available=True)
+    ticket = Ticket.objects.get(id=ticket_id)
+    return redirect('/cart')
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def check_out(request):
+    request.session.modified = True
+    if 'cart' not in request.session:
+        request.session['cart']=[]
+    item_ids = request.session['cart']
+    print request.session['cart']
+    items = []
+    total=0
+    for item_id in item_ids:
+        ticket=Ticket.objects.get(id=item_id)
+        items.append(ticket)
+    for ticket in items:
+        total+=int(ticket.price)
+        print ticket.available
+
+    context = { 'user': User.objects.get(id=request.session['user_id']),
+                'items': items,
+                'total':total,
+    }
+    return render(request,'stubhub/check_out.html',context)
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+def payment_shipping (request):
+   
+    return render(request,'stubhub/payment_shipping.html')
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def purchase(request):
+    
+    return redirect('/confrimation')
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def confirmation(request):
+    
+    return render(request,'stubhub/confrimation')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -256,7 +339,6 @@ def show_event(request, parameter):
 #-----------------------------------------------------------------
 
 def buy_tix(request, parameter):
-    
     event = Event.objects.get(id=parameter)
 
     if request.method == "GET":

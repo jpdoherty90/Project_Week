@@ -57,6 +57,12 @@ input[type=text], select {
     margin: 4px 2px;
     cursor: pointer;
 }
+td{
+    padding:10px;
+}
+table{
+    margin:auto;
+}
 
 
 /* log in page */
@@ -109,7 +115,11 @@ div.nav ul li{
 div.greeting{
     display: inline-block;
 }
-
+/*Check out cta  */
+div.checkout_cta{
+    display: inline-block;
+    float:right;
+}
 .basic_button {
     background: lightgray;
     border-radius: 10px;
@@ -141,4 +151,66 @@ input.search{
     padding: 30px;
 }
 
+/* card-entry */
+.credit-card {
+    width:300px;
+    background-color: white;
+    float:left;
+}
 
+.form-header {
+    height: 30px;
+    padding: 10px;
+    border-bottom: 1px solid #e1e8ee;
+}
+ 
+.form-body {
+    height: 300px;
+    padding: 10px;
+}
+.title {
+    font-size: 18px;
+    margin: 0;
+    color: #5e6977;
+}
+
+.card-number,
+.cvv-input input,
+.month select,
+.year select {
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 14px;
+}
+ 
+.card-number,
+.month select,
+.year select {
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 14px;
+}
+ 
+.card-number,
+.cvv-details,
+.cvv-input input,
+.month select,
+.year select {
+    opacity: .7;
+    color: #86939e;
+}
+
+div.year{
+    display: inline-block;
+}
+div.month{
+    display: inline-block;
+}
+/* Card Number */
+.card-number {
+    width: 100%;
+    margin-bottom: 20px;
+    padding-left: 20px;
+    border: 2px solid #e1e8ee;
+}
+/* Date Field */

@@ -38,7 +38,9 @@ class UserManager(models.Manager):
         errors = {}
         # See if the e-mail address is already registered - If not, prompt them to create an account
         try:
+            print 'email check'
             user = User.objects.get(email=post_data['email'])
+            print 'email not found'
         except:
             errors['user_not_registered'] = "Sorry, we can't find that e-mail in our system.  Please create an account."
             return errors
@@ -105,7 +107,7 @@ class Ticket(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = TicketManager()
 
-class Cart(models.Model):
+class Purchase(models.Model):
     shopper = models.ForeignKey(User, related_name="shopper")
     items = models.ForeignKey(Ticket,related_name="items")
     created_at = models.DateTimeField(auto_now_add=True)
