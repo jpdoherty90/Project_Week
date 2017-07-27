@@ -87,6 +87,9 @@ def log_out(request):
 
 def init_sale(request, parameter):
     
+    del request.session['sell'] 
+    request.session.modified = True
+
     event_id = parameter
     event = Event.objects.get(id=event_id)
 
@@ -434,6 +437,13 @@ def buy_tix(request, parameter):
 
     return render(request, 'stubhub/buy_tix.html', context)
 
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def sell_search(request):
+    request.session['sell'] = True
+    return render(request, 'stubhub/sell_search.html')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------

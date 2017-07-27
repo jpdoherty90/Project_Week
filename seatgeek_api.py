@@ -75,7 +75,7 @@ for event in all_events:
         name = event['venue']['name']
         address = event['venue']['address']
         extended_address = event['venue']['extended_address']
-        Venue.objects.create(name=name, address=address, extended_address=extended_address)
+        venue = Venue.objects.create(name=name, address=address, extended_address=extended_address)
     try:
         Event.objects.get(title=title)
     except:
