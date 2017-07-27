@@ -17,7 +17,14 @@
         <div class="content">
             <h3 class="grey_text">Shopping Cart</h3>
             <hr>
-            <div class="cart_content">
+            <div class="content_card">
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
+                </ul>
+                {% endif %}
                 <table>
                     <tr>
                         <th>Event</th>
@@ -39,13 +46,16 @@
                     </tr>
                     {%endfor%}
                 </table>
-            </div>
-            <hr>
-            <p>TOTAL: {{total}}</p>
-            <form action="/check_out" method="POST">
-            {% csrf_token %}
-            <input class="button" type="submit" value="Check Out">
-            </form>
+                <br>
+                <hr>
+                <form class= "cart_checkout" action="/check_out" method="POST">
+                <p>TOTAL: {{total}}</p>
+                {% csrf_token %}
+                 <input class="button" type="submit" value="Check Out">
+                </form>
+                </div>
+            
+            
         </div>
     </div>
 </body>

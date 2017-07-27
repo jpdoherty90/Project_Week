@@ -269,8 +269,10 @@ def remove_from_cart(request,parameter):
 
 def check_out(request):
     request.session.modified = True
-    if 'cart' not in request.session:
-        request.session['cart']=[]
+    if request.session['cart']==[]:
+        messages.add_message(request, messages.ERROR, "Your Cart is Empty")
+        return redirect("/cart")
+    
     item_ids = request.session['cart']
     print request.session['cart']
     items = []
@@ -287,7 +289,7 @@ def check_out(request):
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'items': items,
                 'total':total,
-    }
+    } 
     return render(request,'stubhub/check_out.html',context)
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -297,54 +299,106 @@ def payment_shipping (request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 def order_review(request):
-    request.session['card']={
-        'first_name': request.POST['first_name'],
-        'last_name': request.POST['last_name'],
-        'card_number': request.POST['card_number'],
-        'exp_month':request.POST['month'],
-        'exp_year': request.POST['year']
-    }
-    card = request.session['card']
+    error=True
+    # Card Verify
+    if len(request.POST['card_number']) < 3:
+        messages.add_message(request, messages.ERROR,"Please enter valid credit card number",extra_tags='CC')
+        error=True
+    if len(request.POST['last_name'])< 3:
+        messages.add_message(request, messages.ERROR, "Please enter name", extra_tags='CC')
+        error=True
+    if len(request.POST['month'] or request.POST['year'])< 3:
+        messages.add_message(request, messages.ERROR, "Please enter valid expiration", extra_tags='CC')
+        error=True
+    if len(request.POST['cvv'])< 3:
+        messages.add_message(request, messages.ERROR, "Please enter CVV", extra_tags='CC')
+        error=True
+    if len(request.POST['address'])<5:
+        messages.add_message(request, messages.ERROR, "Please enter full address", extra_tags='AD')
+        error=True
+    if len(request.POST['full_name'])<5:
+        messages.add_message(request, messages.ERROR, "Please enter resident name", extra_tags='AD')
+        error=True
+    if len(request.POST['state']) <2 :
+        messages.add_message(request, messages.ERROR, "Please enter state", extra_tags='AD')
+        error=True
 
-    request.session['address']={
-        'full_name': request.POST['full_name'],
-        'address': request.POST['address'],
-        'zip': request.POST['card_number'],
-        'city':request.POST['city'],
-        'state': request.POST['state'],
-        'country':request.POST['country']
-    }
-    address= request.session['address']
+    else:
+        error=False
+    
+    if error==True:
+        return redirect('/payment_shipping')
+    else:
+        request.session['card']={
+            'first_name': request.POST['first_name'],
+            'last_name': request.POST['last_name'],
+            'card_number': request.POST['card_number'],
+            'exp_month':request.POST['month'],
+            'exp_year': request.POST['year']
+        }
+        card = request.session['card']
 
-    items = []
-    item_ids = request.session['cart']
-    for item_id in item_ids:
-        ticket=Ticket.objects.get(id=item_id)
-        items.append(ticket)
-    total = request.session['total']
-    context = { 'user': User.objects.get(id=request.session['user_id']),
-                'items': items,
-                'total':total,
-                'card':card,
-                'address':address
-    }
-    return render(request,'stubhub/order_review.html',context)
+        request.session['address']={
+            'full_name': request.POST['full_name'],
+            'address': request.POST['address'],
+            'zip': request.POST['card_number'],
+            'city':request.POST['city'],
+            'state': request.POST['state'],
+            'country':request.POST['country']
+        }
+
+
+        address= request.session['address']
+
+        card_num=request.POST['card_number']
+        print card
+        last_four = card_num[-4:]
+        print last_four
+
+        items = []
+        item_ids = request.session['cart']
+        for item_id in item_ids:
+            ticket=Ticket.objects.get(id=item_id)
+            items.append(ticket)
+        total = request.session['total']
+        context = { 'user': User.objects.get(id=request.session['user_id']),
+                    'items': items,
+                    'total':total,
+                    'card':card,
+                    'address':address,
+                    'last_four':last_four
+        }
+        return render(request,'stubhub/order_review.html',context)
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 def purchase(request):
-    
-
 
     return redirect('/confirmation.html')
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
 def order_confirmation(request):
-    request.session['total'] = 0
-    request.session['cart']=[]
+    user = User.objects.get(id=request.session['user_id'])
+    items=[]
+
+    item_ids = request.session['cart']
+    for item_id in item_ids:
+        ticket=Ticket.objects.get(id=item_id)
+        items.append(ticket)
     
+    for ticket in items:
+        Ticket.objects.filter(id=ticket.id).update(buyer=user)
+        print ticket.buyer.first_name
+    
+       
+   
+
+    # request.session['total'] = 0
+    # request.session['cart']=[]
     return render(request,'stubhub/confirmation.html')
+    
+
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
