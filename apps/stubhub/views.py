@@ -452,11 +452,7 @@ def buy_tix(request, parameter):
 
 def geo(request, lat, lon):
     
-    def get_local_venues_data(url):
-        response = requests.get(url)
-        return json.loads(response.text)
-
-    def get_event_performer_category_data(url):    
+    def get_data(url):
         response = requests.get(url)
         return json.loads(response.text)
 
@@ -466,15 +462,11 @@ def geo(request, lat, lon):
     venue_url += str(lon)
     venue_url += "&range=5mi&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100"
 
-    print"-"*50
-    print venue_url
-    print"-"*50
 
+    all_local_venue_data = get_data(venue_url)
+    all_venues = all_local_venue_data['venues']
 
-    all_local_venue_data = get_local_venues_data(venue_url)
-    all_local_venues = all_local_venue_data['venues']
-
-    for venue in all_local_venues:
+    for venue in all_venues:
         name = venue['name']
         address = venue['address']
         extended_address = venue['extended_address']
@@ -489,7 +481,7 @@ def geo(request, lat, lon):
     event_url += str(lon)
     event_url += "&range=5mi&per_page=1000&sort=datetime_local.asc&score.gt=0.5"
 
-    all_event_data = get_event_performer_category_data(event_url)
+    all_event_data = get_data(event_url)
     all_events = all_event_data['events']
 
     for event in all_events:
@@ -502,11 +494,19 @@ def geo(request, lat, lon):
 
 
     for event in all_events:
-        tag = event['type']
+        taxonomies = event['taxonomies']
+        for category in taxonomies:
+            tag = category['name']
+            formatted_tag = tag.replace('_', ' ')
+            display_tag = formatted_tag.title()
+            seatgeek_ref = category['id']
+            parent_ref = category['parent_id']
         try:
             Category.objects.get(tag=tag)
         except:
-            Category.objects.create(tag=tag)
+            Category.objects.create(tag=tag, seatgeek_ref=seatgeek_ref,parent_ref=parent_ref, display_tag=display_tag)
+
+
 
     for event in all_events:
         title =  event['title']
@@ -523,7 +523,7 @@ def geo(request, lat, lon):
             name = event['venue']['name']
             address = event['venue']['address']
             extended_address = event['venue']['extended_address']
-            Venue.objects.create(name=name, address=address, extended_address=extended_address)
+            venue = Venue.objects.create(name=name, address=address, extended_address=extended_address)
         try:
             Event.objects.get(title=title)
         except:
@@ -534,10 +534,6 @@ def geo(request, lat, lon):
                 except:
                     performer = Performer.objects.create(name=name)
                 this_event.performers.add(performer)
-
-    print"-"*50
-    print "SUCCESS"
-    print"-"*50
 
     request.session['geo'] = True
 
