@@ -389,7 +389,6 @@ def order_confirmation(request):
     
     for ticket in items:
         Ticket.objects.filter(id=ticket.id).update(buyer=user)
-        print ticket.buyer.first_name
     
        
    
