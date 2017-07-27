@@ -10,12 +10,9 @@
     <!-- <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">     -->
 </head>
 <body>
- {% include 'stubhub/snippets/nav.html' %}
-
+{% include 'stubhub/snippets/nav.html' %}
 <div class="container">
-
     <div class="content">
-
         <h1>Buy tickets to {{ event.title }}</h1>
         <p>{{ event.event_date_time }}</p>
         <p>At {{ event.venue.name }}</p>
@@ -31,11 +28,10 @@
             </select>
             <input type="submit" value="Apply">
         </form>
-
         {% for ticket in available_tix %}
             <br>
-            <p>Seat {{ ticket.seat }} for ${{ ticket.price}}</p>
-            <p>for sale by {{ ticket.seller.first_name}} {{ticket.seller.last_name}}</p>
+            <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }} for ${{ ticket.price}}</p>
+            <p>for sale by <a href="/acc_info/{{ticket.seller.id}}">{{ticket.seller.first_name}} {{ticket.seller.last_name}}</a></p>
             <br>
             <form action="/add_to_cart" method="POST">
                     {% csrf_token %}
@@ -45,9 +41,7 @@
             <br>
             <br>
             <hr>
-
         {% endfor %}
-
     </div>
 </body>
 </div>

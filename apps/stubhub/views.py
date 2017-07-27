@@ -3,9 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
 from django.db.models import Avg
-from decimal import *
-from models import User, Ticket, Event, Performer, Venue, Category, Purchase
 
+from models import User, Ticket, Event, Performer, Venue, Category, Purchase
 
 from django.contrib import messages
 
@@ -125,10 +124,16 @@ def post_tickets(request, parameter):
 
     for i in range(int(num_tix)):
         
-        seat_num = "seat_" + str(i+1) 
-        seat = request.POST[seat_num]
-
-        Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
+        seat = "seat_" + str(i+1) 
+        seat = request.POST[seat]
+        
+        reg = re.compile(r'(?P<numbers>\d*)(?P<letters>.*)')
+        result = reg.search(seat)
+        if result:
+            numbers = result.group('numbers')
+            letters = result.group('letters')
+        
+        Ticket.objects.create(event=event, seller=seller, seat_num=numbers, seat_letter=letters, price=price)
 
     url = '/ticket_posted/'
     url += str(parameter)
@@ -160,18 +165,35 @@ def log_reg(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-def acc_info(request):
-    context = { 'user': User.objects.get(id=request.session['user_id']),
-                'bought_tickets': Ticket.objects.filter(buyer_id=request.session['user_id'])
-    }
+def acc_info(request, parameter):
     
-    return render (request,"stubhub/acc_info.html",context)
+    user = User.objects.get(id=parameter)
+
+    tickets_for_sale = Ticket.objects.filter(seller=user, available=True)
+
+    tickets_sold = Ticket.objects.filter(seller=user, available=False)
+
+    tickets_bought = Ticket.objects.filter(buyer=user, available=False)
+    
+    context = { 
+        'user': user,
+        'tickets_for_sale': tickets_for_sale,
+        'tickets_sold': tickets_sold,
+        'tickets_bought': tickets_bought,
+    }
+
+    if 'user_id' in request.session and request.session['user_id'] == user.id:
+        return render(request,"stubhub/acc_info.html",context)
+    else:
+        return render(request,"stubhub/show_user.html",context)
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
 def sell_tickets(request):
-    context = { 'user': User.objects.get(id=request.session['user_id'])
+    
+    context = { 
+        'user': User.objects.get(id=request.session['user_id'])
     }
 
     return render (request,"stubhub/sell_tickets.html",context)
@@ -193,7 +215,7 @@ def cart(request):
     for ticket in items:
         total+=int(ticket.price)
         print ticket.available
-
+    
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'items': items,
                 'total':total,
@@ -247,6 +269,8 @@ def check_out(request):
         total+=int(ticket.price)
         print ticket.available
 
+    request.session['total']= total
+    
     context = { 'user': User.objects.get(id=request.session['user_id']),
                 'items': items,
                 'total':total,
@@ -255,20 +279,59 @@ def check_out(request):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 def payment_shipping (request):
-   
+    
     return render(request,'stubhub/payment_shipping.html')
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
+def order_review(request):
+    request.session['card']={
+        'first_name': request.POST['first_name'],
+        'last_name': request.POST['last_name'],
+        'card_number': request.POST['card_number'],
+        'exp_month':request.POST['month'],
+        'exp_year': request.POST['year']
+    }
+    card = request.session['card']
 
+    request.session['address']={
+        'full_name': request.POST['full_name'],
+        'address': request.POST['address'],
+        'zip': request.POST['card_number'],
+        'city':request.POST['city'],
+        'state': request.POST['state'],
+        'country':request.POST['country']
+    }
+    address= request.session['address']
+
+    items = []
+    item_ids = request.session['cart']
+    for item_id in item_ids:
+        ticket=Ticket.objects.get(id=item_id)
+        items.append(ticket)
+    total = request.session['total']
+    context = { 'user': User.objects.get(id=request.session['user_id']),
+                'items': items,
+                'total':total,
+                'card':card,
+                'address':address
+    }
+    return render(request,'stubhub/order_review.html',context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 def purchase(request):
     
-    return redirect('/confrimation')
+
+
+    return redirect('/confirmation.html')
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-def confirmation(request):
+def order_confirmation(request):
+    request.session['total'] = 0
+    request.session['cart']=[]
     
-    return render(request,'stubhub/confrimation')
+    return render(request,'stubhub/confirmation.html')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -337,14 +400,21 @@ def show_event(request, parameter):
 #-----------------------------------------------------------------
 
 def buy_tix(request, parameter):
+    
     event = Event.objects.get(id=parameter)
 
+    curr_user_id = 0
+    try:
+        curr_user_id = request.session['user_id']
+    except:
+        curr_user_id = -1
+
     if request.method == "GET":
-        available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat")
+        available_tix = Ticket.objects.filter(available=True, event=event).exclude(seller=curr_user_id).order_by("seat_letter").order_by("seat_num")
 
     elif request.method == "POST":
         if request.POST['filter_by'] == "seat":
-            available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat")
+            available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat_letter").order_by("seat_num")
         elif request.POST['filter_by'] == "price_asc":
             available_tix = Ticket.objects.filter(available=True, event=event).order_by("price")
         elif request.POST['filter_by'] == "price_desc":

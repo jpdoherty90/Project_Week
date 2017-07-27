@@ -14,67 +14,77 @@
 <body>
     <div class="container">
         <div class="content">
-            <h3 class="grey_text centered">Payment/Shipping information</h3>
+            <h3 class="grey_text centered">Payment information</h3>
             <hr>
-            <div class="payment">
-                <form class="credit-card">
-                <div class="form-header">
-                    <h4 class="title">Credit Card Details</h4>
-                </div>
-                <div class="form-body">
-                    <!-- Card Number -->
-                    <input type="text" placeholder="First Name">
-                    <input type="text" placeholder="Last Name">
-                    <input type="text" placeholder="Card Number">
-                    <!-- Date Field -->
-                    <div class="date-field">
-                        <div class="month">
-                            <select name="Month">
-                            <option value="january">January</option>
-                            <option value="february">February</option>
-                            <option value="march">March</option>
-                            <option value="april">April</option>
-                            <option value="may">May</option>
-                            <option value="june">June</option>
-                            <option value="july">July</option>
-                            <option value="august">August</option>
-                            <option value="september">September</option>
-                            <option value="october">October</option>
-                            <option value="november">November</option>
-                            <option value="december">December</option>
-                            </select> 
-                        </div>
-
-                        <div class="year">
-                        <select name="Year">
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                        </select>
-                        </div>
+            
+            <form action="/order_review" method="POST">
+                <div class="card">
+                    <div class="form-header">
+                        <h4 class="title">Credit Card Details</h4>
                     </div>
-                    <div class="card-verification">
-                        <div class="cvv-input">
-                            <input type="text" placeholder="CVV">
-                        </div>
-                            <div class="cvv-details">
-                        <p>3 or 4 digits usually found on the signature strip</p>
-                        </div>
-                    </div>
+                
+                        <!-- Card Number -->
+                        <input type="text" name="first_name" placeholder="First Name">
+                        <input type="text" name="last_name" placeholder="Last Name"><br>
+                        <input type="text" name="card_number" placeholder="Card Number">
 
+                        <!-- Date Field -->
+                        <div class="date-field">
+                            <div class="month">
+                                <select name="month">
+                                <option value="january">January</option>
+                                <option value="february">February</option>
+                                <option value="march">March</option>
+                                <option value="april">April</option>
+                                <option value="may">May</option>
+                                <option value="june">June</option>
+                                <option value="july">July</option>
+                                <option value="august">August</option>
+                                <option value="september">September</option>
+                                <option value="october">October</option>
+                                <option value="november">November</option>
+                                <option value="december">December</option>
+                                </select> 
+                            </div>
+
+                            <div class="year">
+                            <select name="year">
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="card-verification">
+                            <div class="cvv-input">
+                                <input type="text" placeholder="CVV">
+                            </div>
+                                <div class="cvv-details">
+                            <p>3 or 4 digits usually found on the signature strip</p>
+                            </div>
+                        </div>
                 </div>
-                </form>
 
-
-            </div>
-            <div class="shipping">
-            </div>
+                <div class="address">
+                    <h4 class="title"> Billing Address</h4>
+                    <ul class="billing">
+                        <li><input class="text" type="text" name="full_name" placeholder="Full name">
+                        <li><input class="text" type="text" name="address" placeholder="Address">
+                        <li><input class="text" type="text" name="zip" placeholder="Zip">
+                        <li><input class="text" type="text" name="city" placeholder="City">
+                        <li><input class="text" type="text" name="state" placeholder="State">
+                        <li><input class="text" type="text" name="country" placeholder="Country">
+                    </ul>
+                </div>
+                        {% csrf_token %}
+                <input class="button center" type="submit" value="Confirm information">
+            </form>
         </div>
     </div>
 </body>

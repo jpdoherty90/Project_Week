@@ -112,6 +112,12 @@ div.nav ul li{
     font-size:13px;
     margin: 10px;
 }
+li{
+    list-style: none;
+}
+ul.billing li{
+     list-style: none;
+}
 div.greeting{
     display: inline-block;
 }
@@ -143,7 +149,10 @@ div.search{
 input.search{
     width: 250px;
 }
-
+.center{
+    margin:auto;
+    display: inline-block;
+}
 .event_image {
     height: 400px;
     width: auto;
@@ -213,4 +222,29 @@ div.month{
     padding-left: 20px;
     border: 2px solid #e1e8ee;
 }
-/* Date Field */
+div.address{
+    display:inline-block;
+    float:right;
+}
+
+div.card{
+    display: inline-block;
+}
+div.card_info{
+  display: inline-block;
+  float:left;
+}
+div.billing_info{
+    float:right;
+    display: inline-block;
+}
+div.overview_info{
+    width: 500px;
+    margin: auto;
+    margin-top: 40px;
+}
+form.confirm_button{
+    margin-top: 60px;
+    display: inline-block;
+    margin-left:660px;
+}

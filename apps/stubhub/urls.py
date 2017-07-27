@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index),
     url(r'^log_reg$', views.log_reg),
-    url(r'^acc_info$', views.acc_info),
+    url(r'^acc_info/(?P<parameter>\d+)$', views.acc_info),
     url(r'^registration_attempt$', views.register),
     url(r'^login_attempt$', views.login),
     url(r'^log_out$', views.log_out),
@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^cart$', views.cart),
     url(r'^payment_shipping$', views.payment_shipping),
     url(r'^purchase$', views.purchase),
+    url(r'^order_review$', views.order_review),
+    url(r'^order_confirmation$', views.order_confirmation),
     url(r'^search$', views.search_results),  
     url(r'^process_search$', views.process_search), 
     url(r'^event/(?P<parameter>\d+)$', views.show_event),
