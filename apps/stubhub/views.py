@@ -87,8 +87,8 @@ def log_out(request):
 
 def init_sale(request, parameter):
     
-    # Overwriting the sell attribute of request.session now that we've routed the user to the sell page so that if they attempt to search again, they will no longer be in seller mode (unless they so choose by clicking on any sell link)
-    request.session['sell'] = False
+    # Overwriting the sell attribute of request.session now that we've reached the end of the sell-search-path
+    request.session['sell_path'] = False
     request.session.modified = True
 
     event_id = parameter
@@ -443,8 +443,12 @@ def buy_tix(request, parameter):
 #-----------------------------------------------------------------
 
 def sell_search(request):
-    request.session['sell'] = True
-    return render(request, 'stubhub/sell_search.html')
+    request.session['sell_path'] = True
+    categories = Category.objects.order_by('tag')
+    context = {
+        'categories': categories,
+    }
+    return render(request, 'stubhub/sell_search.html', context)
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------

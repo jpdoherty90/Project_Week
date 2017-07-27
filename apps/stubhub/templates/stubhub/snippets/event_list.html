@@ -1,7 +1,7 @@
 {% for event in selected_events %}
     <div class='event'>
         <img src="{{event.image}}" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'">
-        {% if request.session.sell %}
+        {% if request.session.sell_path %}
         <h3><a href="sell/{{event.id}}">{{event.title}}</a></h3>
         {% else %}
         <h3><a href="event/{{event.id}}">{{event.title}}</a></h3>
