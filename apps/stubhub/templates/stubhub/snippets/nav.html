@@ -11,8 +11,8 @@
                         <li><a class='nav_link' href="/">Home</a>
                         <li><a class='nav_link' href="/acc_info/{{request.session.user_id}}">My Account</a>
                         <li><a class='nav_link' href="/log_out">Log Out</a>
-                        <li><a class='nav_link' href="/sell_tickets">Sell Tickets</a>
-                        <li><a class='nav_link' href="/cart">Cart</a>
+                        <li><a class='nav_link' href="/sell_tickets_search">Sell Tickets</a>
+                        <li><a class='nav_link' href="/cart">Cart({{request.session.cart|length}})</a>
                 </ul>
                 {%endif%}
                 

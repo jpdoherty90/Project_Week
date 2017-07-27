@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TixPix</title>
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
+    <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">    
+</head>
+
+ {% include 'stubhub/snippets/nav.html' %}
+
+<div class="container">
+<body>
+    <h1> What are you selling?</h1>
+    {% include 'stubhub/snippets/search_bar.html' %}
+    <div>
+        <h2>Sell your tickets on one of the world's largest ticket marketplaces</h2>
+        <ol>
+            <li>List your tickets for sale quickly and easily</li>
+            <li>We'll help buyers find your tickets!</li>
+            <li>Once they've sold, we'll handle the buyers and make sure you get paid fast!</li>
+        </ol>
+    </div>
+</body>
+</div>
+</html>

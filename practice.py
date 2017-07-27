@@ -1,24 +1,24 @@
-import django
-import json, requests
-from datetime import datetime
-from pprint import pprint
-from apps.stubhub.models import Venue, Performer, Event, Category
 
-def get_data(url):
+
+
+def get_local_venues_data(url):
     response = requests.get(url)
     return json.loads(response.text)
 
-# ******TO UPDATE EVENTS, PERFORMERS, VENUES, or CATEGORIES******
-# ******Go to the python shell and execfile('THISFILE')******
-# ******If you don't need all the models, just comment out what you don't need******
+def get_event_performer_category_data(url):    
+    response = requests.get(url)
+    return json.loads(response.text)
 
-# ******VENUES******
+venue_url = "https://api.seatgeek.com/2/venues?lat="
+venue_url += str(lat)
+venue_url += "&lon="
+venue_url += str(lon)
+venue_url += "&range=12mi&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100"
 
-all_Chicago_venue_data = get_data("https://api.seatgeek.com/2/venues?geoip=true&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100")
-all_Chi_venues = all_Chicago_venue_data['venues']
+all_local_venue_data = get_local_venues_data(venue_url)
+all_local_venues = all_local_venue_data['venues']
 
-# # write venue data to our models
-for venue in all_Chi_venues:
+for venue in all_local_venues:
     name = venue['name']
     address = venue['address']
     extended_address = venue['extended_address']
@@ -27,14 +27,15 @@ for venue in all_Chi_venues:
     except:
         Venue.objects.create(name=name, address=address, extended_address=extended_address)
 
-# ******EVENTS, PERFORMERS, AND CATEGORIES******
+event_url = "https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&lat="
+event_url += str(lat)
+event_url += "&lon="
+event_url += str(lon)
+event_url += "&range=12mi&per_page=1000&sort=datetime_local.asc&score.gt=0.5"
 
-all_event_data = get_data("https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&geoip=true&per_page=1000&sort=datetime_local.asc&score.gt=0.5")
+all_event_data = get_event_performer_category_data(event_url)
 all_events = all_event_data['events']
 
-#  ******PERFORMERS******
-
-# # write performer data to our models
 for event in all_events:
     for performer in event['performers']:
         name = performer['name']
@@ -43,25 +44,14 @@ for event in all_events:
         except:
             Performer.objects.create(name=name)
 
-#  ******CATEGORIES******
 
-# write category data to our models
 for event in all_events:
-    taxonomies = event['taxonomies']
-    for category in taxonomies:
-      tag = category['name']
-      formatted_tag = tag.replace('_', ' ')
-      display_tag = formatted_tag.title()
-      seatgeek_ref = category['id']
-      parent_ref = category['parent_id']
+    tag = event['type']
     try:
         Category.objects.get(tag=tag)
     except:
-        Category.objects.create(tag=tag, seatgeek_ref=seatgeek_ref,parent_ref=parent_ref, display_tag=display_tag)
+        Category.objects.create(tag=tag)
 
-#  ******EVENTS******
-
-# write event data to our models
 for event in all_events:
     title =  event['title']
     short_title = event['short_title']
@@ -77,7 +67,7 @@ for event in all_events:
         name = event['venue']['name']
         address = event['venue']['address']
         extended_address = event['venue']['extended_address']
-        venue = Venue.objects.create(name=name, address=address, extended_address=extended_address)
+        Venue.objects.create(name=name, address=address, extended_address=extended_address)
     try:
         Event.objects.get(title=title)
     except:
@@ -88,4 +78,9 @@ for event in all_events:
             except:
                 performer = Performer.objects.create(name=name)
             this_event.performers.add(performer)
+    
+
+
+
+
 

@@ -10,7 +10,7 @@
             <select name='category' onchange="this.form.submit()">
                     <option disabled selected value>Select</option>
                     {% for category in categories %}
-                        <option value="{{category.tag}}">{{category.tag}}</option>
+                        <option value="{{category.display_tag}}">{{category.display_tag}}</option>
                     {% endfor %}
             </select>
             <label for='event_date'>-- Search by Date --</label>
