@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^registration_attempt$', views.register),
     url(r'^login_attempt$', views.login),
     url(r'^log_out$', views.log_out),
+    url(r'^sell_tickets_search$', views.sell_search),
     url(r'^sell/(?P<parameter>\d+)$', views.init_sale),
     url(r'^sell/(?P<parameter>\d+)/post_tickets$', views.post_tickets),
     url(r'^ticket_posted/(?P<parameter>\d+)$', views.ticket_posted),

@@ -4,11 +4,7 @@ from datetime import datetime
 from pprint import pprint
 from apps.stubhub.models import Venue, Performer, Event, Category
 
-def get_Chicago_venues_data(url):
-    response = requests.get(url)
-    return json.loads(response.text)
-
-def get_event_performer_category_data(url):    
+def get_data(url):
     response = requests.get(url)
     return json.loads(response.text)
 
@@ -18,7 +14,7 @@ def get_event_performer_category_data(url):
 
 # ******VENUES******
 
-all_Chicago_venue_data = get_Chicago_venues_data("https://api.seatgeek.com/2/venues?geoip=true&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100")
+all_Chicago_venue_data = get_data("https://api.seatgeek.com/2/venues?geoip=true&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100")
 all_Chi_venues = all_Chicago_venue_data['venues']
 
 # # write venue data to our models
@@ -33,7 +29,7 @@ for venue in all_Chi_venues:
 
 # ******EVENTS, PERFORMERS, AND CATEGORIES******
 
-all_event_data = get_event_performer_category_data("https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&geoip=true&per_page=1000&sort=datetime_local.asc&score.gt=0.5")
+all_event_data = get_data("https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&geoip=true&per_page=1000&sort=datetime_local.asc&score.gt=0.5")
 all_events = all_event_data['events']
 
 #  ******PERFORMERS******
@@ -51,11 +47,17 @@ for event in all_events:
 
 # write category data to our models
 for event in all_events:
-    tag = event['type']
+    taxonomies = event['taxonomies']
+    for category in taxonomies:
+      tag = category['name']
+      formatted_tag = tag.replace('_', ' ')
+      display_tag = formatted_tag.title()
+      seatgeek_ref = category['id']
+      parent_ref = category['parent_id']
     try:
         Category.objects.get(tag=tag)
     except:
-        Category.objects.create(tag=tag)
+        Category.objects.create(tag=tag, seatgeek_ref=seatgeek_ref,parent_ref=parent_ref, display_tag=display_tag)
 
 #  ******EVENTS******
 
@@ -75,7 +77,7 @@ for event in all_events:
         name = event['venue']['name']
         address = event['venue']['address']
         extended_address = event['venue']['extended_address']
-        Venue.objects.create(name=name, address=address, extended_address=extended_address)
+        venue = Venue.objects.create(name=name, address=address, extended_address=extended_address)
     try:
         Event.objects.get(title=title)
     except:
@@ -86,4 +88,4 @@ for event in all_events:
             except:
                 performer = Performer.objects.create(name=name)
             this_event.performers.add(performer)
-    
+

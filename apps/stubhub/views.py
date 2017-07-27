@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 from django.shortcuts import render, redirect, HttpResponse
+from django.db.models import Avg
+
 from models import User, Ticket, Event, Performer, Venue, Category, Purchase
 from django.contrib import messages
 import re, bcrypt, json, requests
@@ -52,7 +54,13 @@ def register(request):
         else:
             request.session['user_id'] = user.id
             request.session['user_name'] = user.first_name
-            return redirect('/')
+            request.session['cart']=[]
+            if request.session['nli_source']=='sell':
+                return redirect('/sell/{}'.format(request.session['nli_event_id']))
+            elif request.session['nli_source']=='cart':
+                return redirect('/buy/{}'.format(request.session['nli_event_id']))
+            else:
+                return redirect('/')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -67,7 +75,13 @@ def login(request):
         user = User.objects.get(email=email)
         request.session['user_id'] = user.id
         request.session['user_name'] = user.first_name
-        return redirect ('/')
+        request.session['cart']=[]
+        if request.session['nli_source']=='sell':
+            return redirect('/sell/{}'.format(request.session['nli_event_id']))
+        elif request.session['nli_source']=='cart':
+            return redirect('/buy/{}'.format(request.session['nli_event_id']))
+        else:
+            return redirect('/')
 
 #-----------------------------------------------------------------
 #----------------------------------------------------------------
@@ -82,6 +96,17 @@ def log_out(request):
 
 def init_sale(request, parameter):
     
+    # Overwriting the sell attribute of request.session now that we've reached the end of the sell-search-path
+    request.session['sell_path'] = False
+    request.session.modified = True
+    # Make sure user is logged in, if not, force them to log-in first
+    try: 
+        request.session['user_id']
+    except:
+        request.session['nli_source'] = 'sell'
+        request.session['nli_event_id'] = parameter
+        return redirect('/log_reg')
+
     event_id = parameter
     event = Event.objects.get(id=event_id)
 
@@ -135,7 +160,6 @@ def post_tickets(request, parameter):
 
     return redirect(url)
 
-
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -185,21 +209,8 @@ def acc_info(request, parameter):
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
-def sell_tickets(request):
-    
-    context = { 
-        'user': User.objects.get(id=request.session['user_id'])
-    }
-
-    return render (request,"stubhub/sell_tickets.html",context)
-
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
-
 def cart(request):
     request.session.modified = True
-    if 'cart' not in request.session:
-        request.session['cart']=[]
     item_ids = request.session['cart']
     print request.session['cart']
     items = []
@@ -223,6 +234,13 @@ def cart(request):
 #-----------------------------------------------------------------
 
 def add_to_cart(request):
+    # Make sure user is logged in, if not, force them to log-in first
+    try: 
+        request.session['user_id']
+    except:
+        request.session['nli_source'] = 'cart'
+        return redirect('/log_reg')
+
     if 'cart' not in request.session:
         request.session['cart']=[]
     request.session.modified = True
@@ -334,14 +352,12 @@ def order_confirmation(request):
 def search_results(request):
     search_field = request.session['search_field']
     search_info = request.session['search_info']
-    print '*'*50
-    print search_field
-    print search_info
-    print '*'*50
     if search_field == 'text':
         selected_events = Event.objects.filter(title__contains=search_info)|Event.objects.filter(venue__name__contains=search_info)|Event.objects.filter(performers__name__contains=search_info)
     elif search_field == 'category':
-        selected_events = Event.objects.filter(category__tag=search_info)
+        category = Category.objects.get(display_tag=search_info)
+        category_ref = category.seatgeek_ref
+        selected_events = Event.objects.filter(category=category)|Event.objects.filter(category__parent_ref=category_ref)
     elif search_field == 'date':
             selected_events = Event.objects.filter(event_date_time__contains=search_info)    
     num_results = len(selected_events)
@@ -397,11 +413,11 @@ def show_event(request, parameter):
 def buy_tix(request, parameter):
     
     event = Event.objects.get(id=parameter)
-
-    curr_user_id = 0
-    try:
+    # Used to exclude tickets the logged in user has posted from the display of available tickets for the event
+    try: 
         curr_user_id = request.session['user_id']
     except:
+        request.session['nli_event_id'] = parameter
         curr_user_id = -1
 
     if request.method == "GET":
@@ -415,8 +431,12 @@ def buy_tix(request, parameter):
         elif request.POST['filter_by'] == "price_desc":
             available_tix = Ticket.objects.filter(available=True, event=event).order_by("-price")
         elif request.POST['filter_by'] == "best_value":
-            available_tix = Ticket.objects.filter(available=True, event=event).order_by("price")
-
+            average_price_dict = Ticket.objects.filter(available=True, event=event).aggregate(Avg('price'))
+            average_price = average_price_dict['price__avg']
+            available_tix = Ticket.objects.filter(available=True, event=event)
+            for ticket in available_tix:
+                ticket.value = (1/float(ticket.seat_num))/(float(average_price)/float(ticket.price))
+            available_tix = sorted(available_tix, key=lambda ticket: ticket.value, reverse=True)
 
     context = {
         "event": event,
@@ -528,3 +548,14 @@ def geo(request, lat, lon):
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
+def sell_search(request):
+    request.session['sell_path'] = True
+    categories = Category.objects.order_by('tag')
+    context = {
+        'categories': categories,
+    }
+    return render(request, 'stubhub/sell_search.html', context)
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+

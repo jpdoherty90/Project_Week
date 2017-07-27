@@ -80,6 +80,9 @@ class Performer(models.Model):
 
 class Category(models.Model):
     tag = models.CharField(max_length = 64)
+    display_tag = models.CharField(max_length = 64)
+    seatgeek_ref = models.IntegerField(blank=True, null=True)
+    parent_ref = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
