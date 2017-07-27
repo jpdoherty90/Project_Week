@@ -59,6 +59,8 @@ def register(request):
             request.session['user_name'] = user.first_name
             if request.session['nli_source']=='sell':
                 return redirect('/sell/{}'.format(request.session['nli_event_id']))
+            elif request.session['nli_source']=='cart':
+                return redirect('/buy/{}'.format(request.session['nli_event_id']))
             else:
                 return redirect('/')
 
@@ -77,6 +79,8 @@ def login(request):
         request.session['user_name'] = user.first_name
         if request.session['nli_source']=='sell':
             return redirect('/sell/{}'.format(request.session['nli_event_id']))
+        elif request.session['nli_source']=='cart':
+            return redirect('/buy/{}'.format(request.session['nli_event_id']))
         else:
             return redirect('/')
 
@@ -233,6 +237,13 @@ def cart(request):
 #-----------------------------------------------------------------
 
 def add_to_cart(request):
+    # Make sure user is logged in, if not, force them to log-in first
+    try: 
+        request.session['user_id']
+    except:
+        request.session['nli_source'] = 'cart'
+        return redirect('/log_reg')
+
     if 'cart' not in request.session:
         request.session['cart']=[]
     request.session.modified = True
@@ -406,10 +417,10 @@ def buy_tix(request, parameter):
     
     event = Event.objects.get(id=parameter)
     # Used to exclude tickets the logged in user has posted from the display of available tickets for the event
-    curr_user_id = 0
-    try:
+    try: 
         curr_user_id = request.session['user_id']
     except:
+        request.session['nli_event_id'] = parameter
         curr_user_id = -1
 
     if request.method == "GET":
