@@ -15,8 +15,54 @@
     <div class="container">
         <div class="content">
             <h3 class="grey_text">Order Review</h3>
-        
+            </hr>
+            </tr>
+                    <table>
+                    <tr>
+                        <th>Event</th>
+                        <th>Venue</th>
+                        <th>Price</th>
+                    </tr>
+                    {%for ticket in items%}
+                    <tr>
+                        <td>{{ticket.event.title}}</td>
+                        <td>{{ticket.event.venue.name}}</td>
+                        <td>{{ticket.price}}</td>
+                    </tr>
+                    {%endfor%}
+                </table>
+                <br>
+                <hr>
 
+
+            
+            <div class='overview_info'>
+                <div class="card_info">
+                    <h3 class="grey_text">Payment Info</h3>
+                    <ul>
+                    <li>Card Holder: {{card.first_name}} {{card.last_name}}<br></li>
+                    <li>Card Number: {{card.card_number}}<br></li>
+                    <li>EXP:{{card.exp_month}}/{{card.exp_year}}<br></li>
+                    </ul> 
+                </div>
+
+                
+                <div class="billing_info">
+                <h3 class="grey_text">Billing Info</h3>
+                <ul>
+                <li>Resident: {{address.full_name}}<br></li>
+                <li>address: {{address.address}}<br></li>
+                <li>City/State: {{address.city}}/{{address.state}}<br></li>
+                <li>Country: {{address.country}}<br></li>
+                </ul>
+                </div> 
+            </div>
+            <form class ='confirm_button' action='/order_confirmation' method="POST">
+                {% csrf_token %}
+            <h4>Total: {{total}}</h4>
+            <br>
+            <input class="button center" type="submit" value="Place Order">
+            </form>
         </div>
     </div>
 </body>
