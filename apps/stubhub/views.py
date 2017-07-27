@@ -13,7 +13,7 @@ from datetime import datetime
 
 
 def index(request):
-
+    request.session['nli_source']='None'
     try: 
         user = User.objects.get(id=request.session['user_id'])
     except:
