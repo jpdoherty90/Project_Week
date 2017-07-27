@@ -7,10 +7,14 @@
     <title>TixPix</title>
      {% load static %}
     <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
-    <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">    
+    <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8"> 
+    {% if not request.session.geo %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+        <script src="{% static 'stubhub/script/geolocation.js' %}"></script> 
+    {% endif %}
 </head>
 
- {% include 'stubhub/snippets/nav.html' %}
+{% include 'stubhub/snippets/nav.html' %}
 
 <div class="container">
 <body>

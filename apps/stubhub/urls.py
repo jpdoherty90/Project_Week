@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^search$', views.search_results),  
     url(r'^process_search$', views.process_search), 
     url(r'^event/(?P<parameter>\d+)$', views.show_event),
+    url(r'^geo/(?P<lat>.+)/(?P<lon>.+)$', views.geo),
 ]
