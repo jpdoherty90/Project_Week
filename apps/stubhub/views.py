@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
-
-
+from django.db.models import Avg
+from decimal import *
 from models import User, Ticket, Event, Performer, Venue, Category, Purchase
 
 
@@ -350,8 +350,12 @@ def buy_tix(request, parameter):
         elif request.POST['filter_by'] == "price_desc":
             available_tix = Ticket.objects.filter(available=True, event=event).order_by("-price")
         elif request.POST['filter_by'] == "best_value":
-            available_tix = Ticket.objects.filter(available=True, event=event).order_by("price")
-
+            average_price_dict = Ticket.objects.filter(available=True, event=event).aggregate(Avg('price'))
+            average_price = average_price_dict['price__avg']
+            available_tix = Ticket.objects.filter(available=True, event=event)
+            for ticket in available_tix:
+                ticket.value = (1/float(ticket.seat_num))/(float(average_price)/float(ticket.price))
+            available_tix = sorted(available_tix, key=lambda ticket: ticket.value, reverse=True)
 
     context = {
         "event": event,
