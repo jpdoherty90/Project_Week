@@ -343,14 +343,12 @@ def order_confirmation(request):
 def search_results(request):
     search_field = request.session['search_field']
     search_info = request.session['search_info']
-    print '*'*50
-    print search_field
-    print search_info
-    print '*'*50
     if search_field == 'text':
         selected_events = Event.objects.filter(title__contains=search_info)|Event.objects.filter(venue__name__contains=search_info)|Event.objects.filter(performers__name__contains=search_info)
     elif search_field == 'category':
-        selected_events = Event.objects.filter(category__tag=search_info)
+        category = Category.objects.get(display_tag=search_info)
+        category_ref = category.seatgeek_ref
+        selected_events = Event.objects.filter(category=category)|Event.objects.filter(category__parent_ref=category_ref)
     elif search_field == 'date':
             selected_events = Event.objects.filter(event_date_time__contains=search_info)    
     num_results = len(selected_events)
