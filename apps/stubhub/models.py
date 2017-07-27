@@ -111,6 +111,7 @@ class Ticket(models.Model):
 class Purchase(models.Model):
     shopper = models.ForeignKey(User, related_name="shopper")
     items = models.ForeignKey(Ticket,related_name="items")
+    payment= models.CharField(max_length = 256)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

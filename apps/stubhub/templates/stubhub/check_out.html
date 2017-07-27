@@ -14,10 +14,12 @@
 {% include 'stubhub/snippets/nav.html' %}
 <body>
     <div class="container">
-        <div class="content">
+        <div class="content_card">
             <h3 class="grey_text">Purchase Summary</h3>
             <hr>
             <div class="cart_content">
+                <br>
+                <br>
                 <table>
                     <tr>
                         <th>Event</th>
@@ -33,6 +35,8 @@
                     {%endfor%}
                 </table>
             </div>
+            <br>
+            <br>
             <hr>
             <div class="checkout_cta">
                 <h3>TOTAL: {{total}}</h3>

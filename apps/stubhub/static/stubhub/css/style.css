@@ -5,6 +5,7 @@
     padding:0px;
     font-family:'Open Sans', sans-serif;
 }
+
 .nav_link {
     color: white;
     text-decoration: none;
@@ -21,7 +22,6 @@
 .messages{
     color: #E53935;
 }
-
 body{
     background-color: whitesmoke;
 }
@@ -62,6 +62,27 @@ td{
 }
 table{
     margin:auto;
+}
+a.button{
+    background-color: #FF5722; 
+    border: none;
+    color: white;
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:7px;
+    padding-bottom: 0px;
+    margin-top:70px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    height: 30px;
+    cursor: pointer;
+    width:200px;
+}
+
+div.thanks{
+    margin:0px auto;
+    display:inline-block;
 }
 
 
@@ -228,16 +249,25 @@ div.address{
 }
 
 div.card{
-    display: inline-block;
+display: inline-block;
 }
 div.card_info{
   display: inline-block;
-  float:left;
+  vertical-align: top;
+  margin-left:200px;
 }
 div.billing_info{
-    float:right;
-    display: inline-block;
+  display: inline-block;
 }
+div.billing_info_overview{
+  display: inline-block;
+  float: right;
+}
+div.card_info_overview{
+  display: inline-block;
+  vertical-align: top;
+}
+
 div.overview_info{
     width: 500px;
     margin: auto;
@@ -245,6 +275,60 @@ div.overview_info{
 }
 form.confirm_button{
     margin-top: 60px;
+    text-align: right;
+}
+div.content_card{
+    padding: 30px;
+    background-color: white;
+    height:490px; 
+    margin:10px;
+
+}
+div.content_card_thankyou{
+    padding: 30px;
+    background-color: white;
+    height:490px;
+    margin:0px;
+    text-align:center;
+    padding-top:60px;
+    padding-bottom:0px;
+
+}
+p.cvv_info{
+    font-size:9px
+}
+
+input.payment{
+    /* margin-top: 300px; */
+}
+
+ul.messages{
+    display:inline-block;
+    float: left;
+    width:200px;
+}
+ ul.messagesright{
     display: inline-block;
-    margin-left:660px;
+    float:right;
+} 
+form.cart_checkout{
+    float:right;
+}
+td.label{
+    text-align: right;
+}
+table.payment_summary td.label{
+    padding:0px;
+    padding-right:8px;
+    padding-top:5px;
+    color:black;
+}
+table.payment_summary td{
+    padding:0px;
+    padding-right:8px;
+    padding-top:5px;
+    color:grey;
+}
+div.overview_info h3{
+    padding-left:5px;
 }

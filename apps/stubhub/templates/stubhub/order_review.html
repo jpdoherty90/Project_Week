@@ -13,7 +13,7 @@
 {% include 'stubhub/snippets/nav.html' %}
 <body>
     <div class="container">
-        <div class="content">
+        <div class="content_card">
             <h3 class="grey_text">Order Review</h3>
             </hr>
             </tr>
@@ -23,6 +23,7 @@
                         <th>Venue</th>
                         <th>Price</th>
                     </tr>
+                    
                     {%for ticket in items%}
                     <tr>
                         <td>{{ticket.event.title}}</td>
@@ -37,24 +38,48 @@
 
             
             <div class='overview_info'>
-                <div class="card_info">
+                <div class="card_info_overview">
                     <h3 class="grey_text">Payment Info</h3>
-                    <ul>
-                    <li>Card Holder: {{card.first_name}} {{card.last_name}}<br></li>
-                    <li>Card Number: {{card.card_number}}<br></li>
-                    <li>EXP:{{card.exp_month}}/{{card.exp_year}}<br></li>
-                    </ul> 
+                    <table class="payment_summary">
+
+                    <tr>
+                        <td class="label">Card Holder:</td> 
+                        <td>{{card.first_name}} {{card.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <td class="label" >Card Number:</td>
+                        <td>*{{last_four}}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">EXP:</td>
+                        <td>{{card.exp_month}}/{{card.exp_year}}</td>
+                    </tr>
+
+                    </table>
                 </div>
 
                 
-                <div class="billing_info">
+                <div class="billing_info_overview">
                 <h3 class="grey_text">Billing Info</h3>
-                <ul>
-                <li>Resident: {{address.full_name}}<br></li>
-                <li>address: {{address.address}}<br></li>
-                <li>City/State: {{address.city}}/{{address.state}}<br></li>
-                <li>Country: {{address.country}}<br></li>
-                </ul>
+                    <table class="payment_summary">
+                    <tr>
+                        <td class="label">Resident:</td> 
+                        <td>{{address.full_name}}</td>
+                    </tr>
+                    <tr>
+                        <td class="label" >Address:</td>
+                        <td >{{address.address}}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">City/State:</td>
+                        <td>{{address.city}}/{{address.state}}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Country:</td>
+                        <td>{{address.country}}</td>
+                    </tr>
+                    </table>
+
                 </div> 
             </div>
             <form class ='confirm_button' action='/order_confirmation' method="POST">
