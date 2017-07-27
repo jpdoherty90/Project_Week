@@ -12,6 +12,9 @@
 {% include 'stubhub/snippets/nav.html' %}
 <div class="container">
     <div class="content">
+    {% if request.session.nli_source %}
+    <h1>You must login before posting tickets for sale.  Please login or register below.</h1>
+    {% endif %}
     <body>
         <div class="reg_content">
             <div class="login">

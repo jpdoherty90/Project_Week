@@ -57,7 +57,10 @@ def register(request):
         else:
             request.session['user_id'] = user.id
             request.session['user_name'] = user.first_name
-            return redirect('/')
+            if request.session['nli_source']=='sell':
+                return redirect('/sell/{}'.format(request.session['nli_event_id']))
+            else:
+                return redirect('/')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -72,7 +75,10 @@ def login(request):
         user = User.objects.get(email=email)
         request.session['user_id'] = user.id
         request.session['user_name'] = user.first_name
-        return redirect ('/')
+        if request.session['nli_source']=='sell':
+            return redirect('/sell/{}'.format(request.session['nli_event_id']))
+        else:
+            return redirect('/')
 
 #-----------------------------------------------------------------
 #----------------------------------------------------------------
@@ -90,6 +96,13 @@ def init_sale(request, parameter):
     # Overwriting the sell attribute of request.session now that we've reached the end of the sell-search-path
     request.session['sell_path'] = False
     request.session.modified = True
+    # Make sure user is logged in, if not, force them to log-in first
+    try: 
+        request.session['user_id']
+    except:
+        request.session['nli_source'] = 'sell'
+        request.session['nli_event_id'] = parameter
+        return redirect('/log_reg')
 
     event_id = parameter
     event = Event.objects.get(id=event_id)
@@ -144,7 +157,6 @@ def post_tickets(request, parameter):
 
     return redirect(url)
 
-
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
@@ -190,17 +202,6 @@ def acc_info(request, parameter):
         return render(request,"stubhub/acc_info.html",context)
     else:
         return render(request,"stubhub/show_user.html",context)
-
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
-
-def sell_tickets(request):
-    
-    context = { 
-        'user': User.objects.get(id=request.session['user_id'])
-    }
-
-    return render (request,"stubhub/sell_tickets.html",context)
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -404,7 +405,7 @@ def show_event(request, parameter):
 def buy_tix(request, parameter):
     
     event = Event.objects.get(id=parameter)
-
+    # Used to exclude tickets the logged in user has posted from the display of available tickets for the event
     curr_user_id = 0
     try:
         curr_user_id = request.session['user_id']
