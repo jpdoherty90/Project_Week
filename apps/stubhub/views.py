@@ -57,6 +57,7 @@ def register(request):
         else:
             request.session['user_id'] = user.id
             request.session['user_name'] = user.first_name
+            request.session['cart']=[]
             if request.session['nli_source']=='sell':
                 return redirect('/sell/{}'.format(request.session['nli_event_id']))
             elif request.session['nli_source']=='cart':
@@ -77,6 +78,7 @@ def login(request):
         user = User.objects.get(email=email)
         request.session['user_id'] = user.id
         request.session['user_name'] = user.first_name
+        request.session['cart']=[]
         if request.session['nli_source']=='sell':
             return redirect('/sell/{}'.format(request.session['nli_event_id']))
         elif request.session['nli_source']=='cart':
@@ -212,8 +214,6 @@ def acc_info(request, parameter):
 
 def cart(request):
     request.session.modified = True
-    if 'cart' not in request.session:
-        request.session['cart']=[]
     item_ids = request.session['cart']
     print request.session['cart']
     items = []
