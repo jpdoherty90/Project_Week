@@ -87,7 +87,8 @@ def log_out(request):
 
 def init_sale(request, parameter):
     
-    del request.session['sell'] 
+    # Overwriting the sell attribute of request.session now that we've routed the user to the sell page so that if they attempt to search again, they will no longer be in seller mode (unless they so choose by clicking on any sell link)
+    request.session['sell'] = False
     request.session.modified = True
 
     event_id = parameter
