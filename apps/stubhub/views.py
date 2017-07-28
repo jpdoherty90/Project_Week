@@ -388,11 +388,7 @@ def order_confirmation(request):
     
     for ticket in items:
         Ticket.objects.filter(id=ticket.id).update(buyer=user)
-       
-    
-       
    
-
     request.session['total'] = 0
     request.session['cart']=[]
     return render(request,'stubhub/confirmation.html')
