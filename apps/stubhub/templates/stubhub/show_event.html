@@ -15,21 +15,6 @@
 <div class="container">
     <div class="content">
 
-<<<<<<< HEAD
-        <h1>{{ event.title }}</h1>
-        <p>{{ event.event_date_time }}</p>
-        <p>At {{ event.venue.name }}</p>
-        <br>
-        <a href="/buy/{{event.id}}" class="basic_button">Buy tickets to this event</a>
-        <br>
-        <br>
-        <a href="/sell/{{event.id}}" class="basic_button">Sell tickets to this event</a>
-        <br>
-        <div class="event_image">
-        <img src="{{event.image}}" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'" class="event_image">
-        </div>
-
-=======
         <div id="event_info">
             <br>
             <h1>{{ event.title }}</h1>
@@ -43,7 +28,6 @@
             <a href="/sell/{{event.id}}" class="button">Sell tickets to this event</a>
         </div>
         <img src="{{event.image}}" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'" class="event_image" id="event_pic">
->>>>>>> 92d86013c1d62f4c559e5c2406dde2cf214969ca
 
     </div>
 </body>
