@@ -1,10 +1,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <div id='search_bar'>
+    </br>
     <form action="/process_search" method='post'>
         {% csrf_token %}
         <div id='text_search'>
-            <input type="text" name='text_search' placeholder='Search for events, artists, teams, or venues'>
-        </div>
+            <input type="text" id ='text_search' name='text_search' placeholder='Search for events, artists, teams, or venues      &#x1F50E'>
+        </div></br>
         <div id='select_search'>
             <p>-- Search by Category --
             <select name='category' onchange="this.form.submit()">
@@ -14,7 +15,7 @@
                     {% endfor %}
             </select>
             <label for='event_date'>-- Search by Date --</label>
-            <input type='date' name='event_date' onchange="this.form.submit()"></p>
+            <input type='date' id='date_search' name='event_date' onchange="this.form.submit()"></p>
     </form>
 </div>
 
