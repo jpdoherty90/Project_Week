@@ -508,3 +508,10 @@ select.search_filter{
     -webkit-appearance: none;
     -webkit-border-radius: 0px;
 }
+
+.password_input{
+    width: 126px;
+    height: 12px;
+    padding: 7px 15px;
+    border-width: 1px;
+}
