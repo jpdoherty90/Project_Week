@@ -28,7 +28,7 @@ div#events_list{
     text-align:center;
 }
 div.event{
-    background-color: #E0F7FA;
+    background-color: white;
     display: inline-block;
     width:200px;
     height:auto;
