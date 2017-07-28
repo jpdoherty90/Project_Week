@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
+     <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">    
+    <title>Log Out Confirmation</title>
+</head>
+
+
+{% include 'stubhub/snippets/nav.html' %}
+<body>
+    <div>
+        <div id="log_out_confirm">
+            <h3 id='log_out_confirm_title'>Wait!  You still have tickets in your cart!</h3>
+            <p><a href="/cart" class="button">Purchase them</a> - or - <a href="/log_out/confirm/remove" class="button">Log out and release them</a></p>
+        </div>
+    </div>
+</body>
+</html>

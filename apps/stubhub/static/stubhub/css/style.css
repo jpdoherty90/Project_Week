@@ -428,11 +428,12 @@ div.confirm_center{
 }
 
 #cart_table{
-    width: 500px;
+    width: 900px;
+    text-align: center;
     table-layout: fixed;
-     -webkit-column-width: 150px; /* Chrome, Safari, Opera */
-    -moz-column-width: 150px; /* Firefox */
-    column-width: 150px;
+     -webkit-column-width: 175px; /* Chrome, Safari, Opera */
+    -moz-column-width: 175px; /* Firefox */
+    column-width: 175px;
 }
 
 #sell_search_title{
@@ -450,6 +451,20 @@ div.confirm_center{
 #how_to_sell p{
     padding: 10px
 }
+
+#log_out_confirm{
+    width: 500px;
+    margin: auto;
+    text-align: center;
+}
+
+#log_out_confirm_title{
+    width: 375px;
+    text-align: center;
+    margin: 30px auto -30px auto;
+    white-space: nowrap;
+}
+
 a h3{
     color:black;
 }
