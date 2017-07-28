@@ -404,3 +404,11 @@ div.confirm_center{
 #date_search{
     width: 100px;
 }
+
+#cart_table{
+    width: 500px;
+    table-layout: fixed;
+     -webkit-column-width: 100px; /* Chrome, Safari, Opera */
+    -moz-column-width: 100px; /* Firefox */
+    column-width: 100px;
+}

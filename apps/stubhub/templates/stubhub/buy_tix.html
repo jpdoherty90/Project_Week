@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>TixPix</title>
+    <title>Buy Tickets</title>
      {% load static %}
     <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
     <!-- <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">     -->
@@ -20,13 +20,12 @@
         <h1>Available tickets:</h1>
         <form action="/buy/{{event.id}}" method="POST">
             {% csrf_token %}
-            Filter by: <select name="filter_by">
+            Filter by: <select name="filter_by" onchange="this.form.submit()">
                 <option value="seat">Seat</option>
                 <option value="price_asc">Lowest Price</option>
                 <option value="price_desc">Highest Price</option>
                 <option value="best_value">Best Value</option>
             </select>
-            <input type="submit" value="Apply">
         </form>
         {% for ticket in available_tix %}
             <br>
