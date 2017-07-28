@@ -24,12 +24,14 @@
                     <tr>
                         <th>Event</th>
                         <th>Venue</th>
+                        <th>Seat</th>
                         <th>Price</th>
                     </tr>
                     {%for ticket in items%}
                     <tr>
                         <td>{{ticket.event.title}}</td>
                         <td>{{ticket.event.venue.name}}</td>
+                        <td>{{ticket.event.seat_num}}{{ticket.event.seat_letter}}</td>
                         <td>${{ticket.price}}</td>
                     </tr>
                     {%endfor%}
