@@ -386,3 +386,21 @@ div.overview_info h3{
 div.confirm_center{
     text-align: center;
 }
+
+#search_bar{
+    width: 700px;
+    text-align: center;
+    margin: auto;
+
+}
+
+#text_search{
+    width: 500px;
+    font-size: 20px;
+    text-align: center;
+    margin: auto;
+}
+
+#date_search{
+    width: 100px;
+}

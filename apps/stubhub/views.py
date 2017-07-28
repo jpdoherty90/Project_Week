@@ -21,6 +21,7 @@ def index(request):
 
     all_events = Event.objects.order_by('event_date_time', 'popularity_score')
     categories = Category.objects.order_by('tag')
+    print categories
     context = {
         'selected_events': all_events,
         'categories': categories,
@@ -551,11 +552,18 @@ def geo(request, lat, lon):
 
 
     for event in all_events:
-        tag = event['type']
+        taxonomies = event['taxonomies']
+        for category in taxonomies:
+            tag = category['name']
+            formatted_tag = tag.replace('_', ' ')
+            display_tag = formatted_tag.title()
+            seatgeek_ref = category['id']
+            parent_ref = category['parent_id']
         try:
             Category.objects.get(tag=tag)
         except:
-            Category.objects.create(tag=tag)
+            Category.objects.create(tag=tag, seatgeek_ref=seatgeek_ref,parent_ref=parent_ref, display_tag=display_tag)
+
 
     for event in all_events:
         title =  event['title']
@@ -572,7 +580,7 @@ def geo(request, lat, lon):
             name = event['venue']['name']
             address = event['venue']['address']
             extended_address = event['venue']['extended_address']
-            Venue.objects.create(name=name, address=address, extended_address=extended_address)
+            venue = Venue.objects.create(name=name, address=address, extended_address=extended_address)
         try:
             Event.objects.get(title=title)
         except:
