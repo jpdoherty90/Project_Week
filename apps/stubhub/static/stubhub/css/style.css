@@ -409,3 +409,44 @@ div.confirm_center{
     vertical-align: top;
     border: 5px solid #FF5722; 
 }
+#search_bar{
+    width: 700px;
+    text-align: center;
+    margin: auto;
+
+}
+
+#text_search{
+    width: 500px;
+    font-size: 20px;
+    text-align: center;
+    margin: auto;
+}
+
+#date_search{
+    width: 100px;
+}
+
+#cart_table{
+    width: 500px;
+    table-layout: fixed;
+     -webkit-column-width: 150px; /* Chrome, Safari, Opera */
+    -moz-column-width: 150px; /* Firefox */
+    column-width: 150px;
+}
+
+#sell_search_title{
+    text-align: center;
+    width: 350px;
+    margin: 10px auto;
+}
+
+#sell_search_title_content{
+    text-align: center;
+    margin: auto;
+    white-space: nowrap;
+}
+
+#how_to_sell p{
+    padding: 10px
+}

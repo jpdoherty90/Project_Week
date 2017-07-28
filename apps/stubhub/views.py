@@ -21,6 +21,7 @@ def index(request):
 
     all_events = Event.objects.order_by('event_date_time', 'popularity_score')
     categories = Category.objects.order_by('tag')
+    print categories
     context = {
         'selected_events': all_events,
         'categories': categories,
