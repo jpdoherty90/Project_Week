@@ -1,22 +1,25 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<div class="content_search">
 <div id='search_bar'>
     </br>
     <form action="/process_search" method='post'>
         {% csrf_token %}
         <div id='text_search'>
-            <input type="text" id ='text_search' name='text_search' placeholder='Search for events, artists, teams, or venues      &#x1F50E'>
+            <input type="text" id ='text_search' name='text_search' placeholder='Search for events, artists, teams, or venues      &#x1F50E' onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search for events, artists, teams, or venues      &#x1F50E'">
         </div></br>
         <div id='select_search'>
-            <p>-- Search by Category --
-            <select name='category' onchange="this.form.submit()">
+            <p>Search by Category
+            <select class="search_filter" name='category' onchange="this.form.submit()" height="200px">
                     <option disabled selected value>Select</option>
                     {% for category in categories %}
                         <option value="{{category.display_tag}}">{{category.display_tag}}</option>
                     {% endfor %}
             </select>
-            <label for='event_date'>-- Search by Date --</label>
+            <label for='event_date'>Search by Date</label>
             <input type='date' id='date_search' name='event_date' onchange="this.form.submit()"></p>
+        </div>
     </form>
+</div>
 </div>
 
 

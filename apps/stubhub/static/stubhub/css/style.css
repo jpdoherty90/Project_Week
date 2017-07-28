@@ -22,7 +22,7 @@ p.event{
 div#events_list{
 	column-width: 320px;
     column-gap: 2px;
-    columns:4;
+    columns:4; 
     width: 90%;
 	max-width: 1100px;
     margin: auto;
@@ -36,7 +36,7 @@ div.event{
     padding:10px;
     margin-bottom:5px;
     box-shadow: .5px .5px 5px #888888;
-}
+}  
 
 
 .nav_link {
@@ -167,6 +167,9 @@ div.nav ul li{
 }
 li{
     list-style: none;
+}
+div.nav ul li a:hover{
+    text-decoration: underline;
 }
 
 ul.billing li{
@@ -481,4 +484,27 @@ div.event:hover p{
     background-color: #FF7043;
     color:white;
 }
-
+div.content_search{
+    padding-left: 30px;
+    padding-right:30px;
+    padding-top:10px;
+    padding-bottom:20px;
+    background-color: white;
+    margin:10px;
+}
+input#text_search{
+    border-width: 2px;
+    height: 35px;
+}
+input#date_search{
+    height:28px;
+    width:120px;
+    border-width: .5px;
+    border-color: #CCCCCC;
+    border-style: solid;
+}
+select.search_filter{
+    height:30px;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0px;
+}
