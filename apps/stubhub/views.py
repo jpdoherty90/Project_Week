@@ -56,7 +56,7 @@ def register(request):
             request.session['user_id'] = user.id
             request.session['user_name'] = user.first_name
             request.session['cart']=[]
-            if request.session['nli_source']=='sell':
+            if 'nli_source' in request.session and request.session['nli_source']=='sell':
                 return redirect('/sell/{}'.format(request.session['nli_event_id']))
             elif request.session['nli_source']=='cart':
                 return redirect('/buy/{}'.format(request.session['nli_event_id']))
@@ -77,9 +77,9 @@ def login(request):
         request.session['user_id'] = user.id
         request.session['user_name'] = user.first_name
         request.session['cart']=[]
-        if request.session['nli_source']=='sell':
+        if 'nli_source' in request.session and request.session['nli_source']=='sell':
             return redirect('/sell/{}'.format(request.session['nli_event_id']))
-        elif request.session['nli_source']=='cart':
+        elif 'nli_source' in request.session and request.session['nli_source']=='cart':
             return redirect('/buy/{}'.format(request.session['nli_event_id']))
         else:
             return redirect('/')
@@ -252,6 +252,34 @@ def add_to_cart(request):
     x="/"+str(ticket.event.id)
     
     return redirect('/buy'+ x)
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def add_to_cart_from(request, parameter):
+    
+    try: 
+        request.session['user_id']
+    except:
+        request.session['nli_source'] = 'cart'
+        return redirect('/log_reg')
+
+    if 'cart' not in request.session:
+        request.session['cart']=[]
+    request.session.modified = True
+    ticket_id= request.POST['ticket_id']
+    ticket = Ticket.objects.get(id=ticket_id)
+    Ticket.objects.filter(id=ticket_id).update(available=False)
+   
+    request.session['cart'].append(ticket_id)
+
+    x="/"+str(parameter)
+    
+    return redirect('/acc_info'+ x)
+
+
+
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
@@ -502,11 +530,7 @@ def buy_tix(request, parameter):
 
 def geo(request, lat, lon):
     
-    def get_local_venues_data(url):
-        response = requests.get(url)
-        return json.loads(response.text)
-
-    def get_event_performer_category_data(url):    
+    def get_data(url):
         response = requests.get(url)
         return json.loads(response.text)
 
@@ -516,15 +540,11 @@ def geo(request, lat, lon):
     venue_url += str(lon)
     venue_url += "&range=5mi&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100"
 
-    print"-"*50
-    print venue_url
-    print"-"*50
 
+    all_local_venue_data = get_data(venue_url)
+    all_venues = all_local_venue_data['venues']
 
-    all_local_venue_data = get_local_venues_data(venue_url)
-    all_local_venues = all_local_venue_data['venues']
-
-    for venue in all_local_venues:
+    for venue in all_venues:
         name = venue['name']
         address = venue['address']
         extended_address = venue['extended_address']
@@ -539,7 +559,7 @@ def geo(request, lat, lon):
     event_url += str(lon)
     event_url += "&range=5mi&per_page=1000&sort=datetime_local.asc&score.gt=0.5"
 
-    all_event_data = get_event_performer_category_data(event_url)
+    all_event_data = get_data(event_url)
     all_events = all_event_data['events']
 
     for event in all_events:
@@ -563,6 +583,7 @@ def geo(request, lat, lon):
             Category.objects.get(tag=tag)
         except:
             Category.objects.create(tag=tag, seatgeek_ref=seatgeek_ref,parent_ref=parent_ref, display_tag=display_tag)
+
 
 
     for event in all_events:
@@ -591,10 +612,6 @@ def geo(request, lat, lon):
                 except:
                     performer = Performer.objects.create(name=name)
                 this_event.performers.add(performer)
-
-    print"-"*50
-    print "SUCCESS"
-    print"-"*50
 
     request.session['geo'] = True
 
