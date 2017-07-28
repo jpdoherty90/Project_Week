@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^buy/(?P<parameter>\d+)$', views.buy_tix),
     url(r'^confirmation$', views.cart),
     url(r'^add_to_cart$', views.add_to_cart),
+    url(r'^add_to_cart_from/(?P<parameter>\d+)$', views.add_to_cart_from),
     url(r'^remove_from_cart/(?P<parameter>\d+)$', views.remove_from_cart),
     url(r'^check_out$', views.check_out),
     url(r'^cart$', views.cart),

@@ -7,16 +7,15 @@
     <title>{{ event.title }}</title>
      {% load static %}
     <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
-    <!-- <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">     -->
+    <!-- <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">      -->
 </head>
 <body>
  {% include 'stubhub/snippets/nav.html' %}
 
 <div class="container">
-
-   
     <div class="content">
 
+<<<<<<< HEAD
         <h1>{{ event.title }}</h1>
         <p>{{ event.event_date_time }}</p>
         <p>At {{ event.venue.name }}</p>
@@ -30,6 +29,21 @@
         <img src="{{event.image}}" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'" class="event_image">
         </div>
 
+=======
+        <div id="event_info">
+            <br>
+            <h1>{{ event.title }}</h1>
+            <br>
+            <p>{{ event.event_date_time }}</p>
+            <br>
+            <p>At {{ event.venue.name }}</p>
+            <br>
+            <a href="/buy/{{event.id}}" class="button">Buy tickets to this event</a>
+            <br>
+            <a href="/sell/{{event.id}}" class="button">Sell tickets to this event</a>
+        </div>
+        <img src="{{event.image}}" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'" class="event_image" id="event_pic">
+>>>>>>> 92d86013c1d62f4c559e5c2406dde2cf214969ca
 
     </div>
 </body>

@@ -386,6 +386,28 @@ div.confirm_center{
     text-align: center;
 }
 
+.ticket_row {
+    display: inline-block;
+    width: 30%;
+    border-left: 1px solid gray;
+    height: auto;
+    padding: 10px;
+    vertical-align: top;
+}
+
+#event_info {
+    display: inline-block;
+    width: 40%;
+    vertical-align: top;
+    text-align: center;
+}
+
+#event_pic {
+    display: inline-block;
+    width: 40%;
+    vertical-align: top;
+    border: 5px solid #FF5722; 
+}
 #search_bar{
     width: 700px;
     text-align: center;
@@ -407,7 +429,23 @@ div.confirm_center{
 #cart_table{
     width: 500px;
     table-layout: fixed;
-     -webkit-column-width: 100px; /* Chrome, Safari, Opera */
-    -moz-column-width: 100px; /* Firefox */
-    column-width: 100px;
+     -webkit-column-width: 150px; /* Chrome, Safari, Opera */
+    -moz-column-width: 150px; /* Firefox */
+    column-width: 150px;
+}
+
+#sell_search_title{
+    text-align: center;
+    width: 350px;
+    margin: 10px auto;
+}
+
+#sell_search_title_content{
+    text-align: center;
+    margin: auto;
+    white-space: nowrap;
+}
+
+#how_to_sell p{
+    padding: 10px
 }
