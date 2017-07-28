@@ -1,13 +1,15 @@
 
 {% for event in selected_events %}
+    {% if request.session.sell_path %}
+    <a href="sell/{{event.id}}">
+    {% else %}
+    <a href="event/{{event.id}}">
+    {% endif %}
     <div class='event'>
         <img src="{{event.image}}" height="140" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'">
-        {% if request.session.sell_path %}
-        <h3><a href="sell/{{event.id}}">{{event.title}}</a></h3>
-        {% else %}
-        <h3><a href="event/{{event.id}}">{{event.title}}</a></h3>
-        {% endif %}
+        <h3>{{event.title}}</h3>
         <p class="event">{{event.event_date_time}}</p>
         <p class="event">{{event.venue.name}}</p>
     </div>
+    </a>
 {% endfor %}
