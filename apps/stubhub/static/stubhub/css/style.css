@@ -168,6 +168,9 @@ div.nav ul li{
 li{
     list-style: none;
 }
+div.nav ul li a:hover{
+    text-decoration: underline;
+}
 
 ul.billing li{
      list-style: none;
