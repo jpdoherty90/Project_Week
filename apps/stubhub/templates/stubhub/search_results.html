@@ -14,9 +14,13 @@
 {% include 'stubhub/snippets/search_bar.html' %}
 <div class="container">
 <body>
+    <div class="content">
+        <h3 class="grey_text">{{num_results}} results for {{query}}</h3>
+        <hr>
+        <br>
     <div id='events_list'>
-        <h3>{{num_results}} results for {{query}}</h3>
         {% include 'stubhub/snippets/event_list.html' %}
+    </div>
     </div>
 </body>
 </div>

@@ -16,13 +16,13 @@
         <div class="content_card">
             <h3 class="grey_text centered">Payment information</h3>
             <hr>
+            <div class="confirm_center">
             <div class="card_info">
                 <form action="/order_review" method="POST">
                     <div class="card">
                         <div class="form-header">
                             <h4 class="title">Credit Card Details</h4>
                         </div>
-                    
                             <!-- Card Number -->
                             <input type="text" name="first_name" placeholder="First Name"><br>
                             <input type="text" name="last_name" placeholder="Last Name"><br>
@@ -50,7 +50,6 @@
 
                                 <div class="year">
                                 <select name="year">
-                                    <option value="2016">2016</option>
                                     <option value="2017">2017</option>
                                     <option value="2018">2018</option>
                                     <option value="2019">2019</option>
@@ -61,6 +60,7 @@
                                     <option value="2024">2024</option>
                                 </select>
                                 </div>
+                        
                             </div>
                             <div class="card-verification">
                                 <div class="cvv-input">
@@ -85,10 +85,9 @@
                             <li><input class="text" type="text" name="country" placeholder="Country">
                         </ul>
                     </div>
-                    </div>
-                    
+                
                             {% csrf_token %}
-                    <input class="button center payment" type="submit" value="Confirm information">
+                    <input id="confirm_payment" class="button" type="submit" value="Confirm information">
                 </form>
                 
                 <div>
@@ -116,7 +115,8 @@
                 
 
                 </div>
-            
+            </div>
+            </div>
         </div>
     </div>
 </body>

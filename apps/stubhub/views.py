@@ -212,7 +212,6 @@ def acc_info(request, parameter):
 def cart(request):
     request.session.modified = True
     item_ids = request.session['cart']
-    print request.session['cart']
     items = []
     total=0
     for item_id in item_ids:
@@ -270,7 +269,7 @@ def remove_from_cart(request,parameter):
 def check_out(request):
     request.session.modified = True
     if request.session['cart']==[]:
-        messages.add_message(request, messages.ERROR, "Your Cart is Empty")
+        messages.add_message(request, messages.ERROR, "Your Cart is Empty",extra_tags='CE')
         return redirect("/cart")
     
     item_ids = request.session['cart']
@@ -389,13 +388,13 @@ def order_confirmation(request):
     
     for ticket in items:
         Ticket.objects.filter(id=ticket.id).update(buyer=user)
-        print ticket.buyer.first_name
+       
     
        
    
 
-    # request.session['total'] = 0
-    # request.session['cart']=[]
+    request.session['total'] = 0
+    request.session['cart']=[]
     return render(request,'stubhub/confirmation.html')
     
 
