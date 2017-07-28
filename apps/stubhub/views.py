@@ -209,7 +209,7 @@ def acc_info(request, parameter):
     tickets_for_sale = Ticket.objects.filter(seller=user, available=True)
 
     tickets_sold = Ticket.objects.filter(seller=user, available=False)
-
+    
     tickets_bought = Ticket.objects.filter(buyer=user, available=False)
     
     context = { 
