@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
      {% load static %}
     <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
-     <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">    
+    <link rel="script" href="{% static 'stubhub/script/script.js' %}" media="screen" title="no title"  charset="utf-8">    
     <title>Tix Pix Checkout</title>
 </head>
 
@@ -23,16 +23,16 @@
                 <table>
                     <tr>
                         <th>Event</th>
-                        <th>Venue</th>
                         <th>Seat</th>
                         <th>Price</th>
+                        <th>Venue</th>
                     </tr>
                     {%for ticket in items%}
                     <tr>
                         <td>{{ticket.event.title}}</td>
-                        <td>{{ticket.event.venue.name}}</td>
-                        <td>{{ticket.event.seat_num}}{{ticket.event.seat_letter}}</td>
+                        <td>{{ticket.seat_num}}{{ticket.seat_letter}}</td>
                         <td>${{ticket.price}}</td>
+                        <td>{{ticket.event.venue.name}}</td>
                     </tr>
                     {%endfor%}
                 </table>
