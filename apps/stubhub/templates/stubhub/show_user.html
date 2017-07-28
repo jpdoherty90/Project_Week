@@ -7,6 +7,10 @@
     <title>Account Information</title>
      {% load static %}
     <link rel="stylesheet" href="{% static 'stubhub/css/style.css' %}" media="screen" title="no title"  charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/vader/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{% static 'stubhub/script/tabs.js' %}"></script>
 </head>
 <body>
     {% include 'stubhub/snippets/nav.html' %}
@@ -15,7 +19,75 @@
         <h1>{{user.first_name}} {{user.last_name}}</h1>
         <br>
 
-        <div class="ticket_row">
+
+        <div id="tabs">
+
+            <ul>
+                <li><a href="#tabs-1">Current tickets {{user.first_name}} {{user.last_name}} has for sale:</a></li>
+                <li><a href="#tabs-2">Tickets sold by {{user.first_name}} {{user.last_name}} in the past:</a></li>
+                <li><a href="#tabs-3">Tickets bought by {{user.first_name}} {{user.last_name}} in the past:</a></li>
+            </ul>
+
+            <div id="tabs-1">
+
+                {% if tickets_for_sale %}
+                <hr>
+                {% for ticket in tickets_for_sale %}
+                    <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }}</p>
+                    <p>at <a href="/event/{{ticket.event.id}}"><strong>{{ ticket.event.title }}</strong></a></p>
+                    <p>for ${{ ticket.price }}</p>
+                    <hr>
+                {% endfor %}
+                <br>
+                <br>
+                {% else %}
+                    <p class="light_grey_text">No tickets for sale</p>
+                {% endif %}
+
+            </div>
+
+            <div id="tabs-2">
+
+                {% if tickets_sold %}
+                <hr>
+                {% for ticket in tickets_sold %}
+                    <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }}</p>
+                    <p>at <a href="/event/{{ticket.event.id}}"><strong>{{ ticket.event.title }}</strong></a></p>
+                    <p>for ${{ ticket.price }}</p>
+                    <hr>
+                {% endfor %}
+                <br>
+                <br>
+                {% else %}
+                    <p class="light_grey_text">No tickets sold</p>
+                {% endif %}
+
+
+            </div>
+
+            <div id="tabs-3">
+
+                {% if tickets_bought %}
+                <hr>
+                {% for ticket in tickets_bought %}
+                    <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }}</p>
+                    <p>at <a href="/event/{{ticket.event.id}}"><strong>{{ ticket.event.title }}</strong></a></p>
+                    <p>for ${{ ticket.price }}</p>
+                    <hr>
+                {% endfor %}
+                <br>
+                <br>
+                {% else %}
+                    <p class="light_grey_text">No tickets bought</p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- <div class="ticket_row">
             <h2>Current tickets {{user.first_name}} {{user.last_name}} has for sale:</h2>
             <br>
             {% if tickets_for_sale %}
@@ -84,7 +156,7 @@
                 <p class="light_grey_text">No tickets bought</p>
 
             {% endif %}
-        </div>
+        </div> -->
 
     </div>
 </body>
