@@ -17,14 +17,13 @@
 
         <div id="event_info">
             <br>
+            <br>
             <h1>{{ event.title }}</h1>
             <br>
             <p>{{ event.event_date_time }}</p>
             <br>
             <p>At {{ event.venue.name }}</p>
-            <br>
             <a href="/buy/{{event.id}}" class="button">Buy tickets to this event</a>
-            <br>
             <a href="/sell/{{event.id}}" class="button">Sell tickets to this event</a>
         </div>
         <img src="{{event.image}}" alt="Image of performer for {{event.title}}" onerror="this.style.display='none'" class="event_image" id="event_pic">

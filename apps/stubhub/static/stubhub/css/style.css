@@ -16,7 +16,8 @@ li a{
 }
 p.event{
     color: #757575;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight:400;
 }
 div#events_list{
 	column-width: 320px;
@@ -137,7 +138,6 @@ div.register{
     display:inline-block;
     float:right;
 }
-
 /* navigation */
 div.nav{
     height: 70px;
@@ -462,4 +462,19 @@ div.confirm_center{
     text-align: center;
     margin: 30px auto -30px auto;
     white-space: nowrap;
+a h3{
+    color:black;
+}
+
+div.event:hover h3{
+    background-color: #FF7043;
+    color:white;
+}
+div.event:hover {
+    background-color: #FF7043;
+}
+
+div.event:hover p{
+    background-color: #FF7043;
+    color:white;
 }
