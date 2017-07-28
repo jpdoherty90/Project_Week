@@ -28,7 +28,7 @@
                     <tr>
                         <td>{{ticket.event.title}}</td>
                         <td>{{ticket.event.venue.name}}</td>
-                        <td>{{ticket.price}}</td>
+                        <td>${{ticket.price}}</td>
                     </tr>
                     {%endfor%}
                 </table>
@@ -84,9 +84,9 @@
             </div>
             <form class ='confirm_button' action='/order_confirmation' method="POST">
                 {% csrf_token %}
-            <h4>Total: {{total}}</h4>
+            <h4>Total: ${{total}}</h4>
             <br>
-            <input class="button center" type="submit" value="Place Order">
+            <input class="button center" type="submit" value="Buy Tickets">
             </form>
         </div>
     </div>

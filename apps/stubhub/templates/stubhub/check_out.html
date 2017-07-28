@@ -30,7 +30,7 @@
                     <tr>
                         <td>{{ticket.event.title}}</td>
                         <td>{{ticket.event.venue.name}}</td>
-                        <td>{{ticket.price}}</td>
+                        <td>${{ticket.price}}</td>
                     </tr>
                     {%endfor%}
                 </table>
@@ -39,7 +39,7 @@
             <br>
             <hr>
             <div class="checkout_cta">
-                <h3>TOTAL: {{total}}</h3>
+                <h3>TOTAL: ${{total}}</h3>
                 <form action="/payment_shipping" method="POST">
                     {% csrf_token %}
                 <input class="button" type="submit" value="To Payment/Shipping">

@@ -19,13 +19,15 @@
             <hr>
             <div class="content_card">
                 {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                    {% endfor %}
-                </ul>
+                    <ul class="error">
+                        {% for message in messages %}
+                        {%if "CE" in message.tags%}
+                        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                        {%endif%}
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-                <table>
+                <table width="500px">
                     <tr>
                         <th>Event</th>
                         <th>Price</th>
@@ -35,7 +37,7 @@
                     {%for ticket in items%}
                     <tr>
                         <td>{{ticket.event.title}}</td>
-                        <td>{{ticket.price}}</td>
+                        <td>${{ticket.price}}</td>
                         <td>{{ticket.event.venue.name}}</td>
                         <td>
                             <form action="/remove_from_cart/{{ticket.id}}" method="POST">
@@ -49,7 +51,7 @@
                 <br>
                 <hr>
                 <form class= "cart_checkout" action="/check_out" method="POST">
-                <p>TOTAL: {{total}}</p>
+                <p>TOTAL: ${{total}}</p>
                 {% csrf_token %}
                  <input class="button" type="submit" value="Check Out">
                 </form>

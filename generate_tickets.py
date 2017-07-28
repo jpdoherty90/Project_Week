@@ -21,5 +21,5 @@ fixture = AutoFixture(Ticket, field_values = {
     'buyer': None, 
 })
 
-for x in range (0, 5000):
+for x in range (0, 500):
     entry = fixture.create(1)
