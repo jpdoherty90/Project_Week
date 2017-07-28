@@ -408,7 +408,23 @@ div.confirm_center{
 #cart_table{
     width: 500px;
     table-layout: fixed;
-     -webkit-column-width: 100px; /* Chrome, Safari, Opera */
-    -moz-column-width: 100px; /* Firefox */
-    column-width: 100px;
+     -webkit-column-width: 150px; /* Chrome, Safari, Opera */
+    -moz-column-width: 150px; /* Firefox */
+    column-width: 150px;
+}
+
+#sell_search_title{
+    text-align: center;
+    width: 350px;
+    margin: 10px auto;
+}
+
+#sell_search_title_content{
+    text-align: center;
+    margin: auto;
+    white-space: nowrap;
+}
+
+#how_to_sell p{
+    padding: 10px
 }
