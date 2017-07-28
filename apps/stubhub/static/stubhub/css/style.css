@@ -450,3 +450,16 @@ div.confirm_center{
 #how_to_sell p{
     padding: 10px
 }
+
+#log_out_confirm{
+    width: 500px;
+    margin: auto;
+    text-align: center;
+}
+
+#log_out_confirm_title{
+    width: 375px;
+    text-align: center;
+    margin: 30px auto -30px auto;
+    white-space: nowrap;
+}

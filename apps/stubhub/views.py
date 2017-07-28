@@ -88,12 +88,29 @@ def login(request):
 #----------------------------------------------------------------
 
 def log_out(request):
-    request.session.clear()
-    return redirect("/")
+    if len(request.session['cart']) > 0: 
+        return redirect('/log_out/confirm')
+    else:
+        request.session.clear()
+        return redirect("/")
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def log_out_confirm(request):
+    return render(request, 'stubhub/log_out_confirm.html')
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------
 
+def remove_all_from_cart(request):
+    request.session.modified = True
+    for ticket_id in request.session['cart']:
+        Ticket.objects.filter(id=ticket_id).update(available=True)
+    request.session['cart']=[]
+    return redirect('/log_out')
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
 
 def init_sale(request, parameter):
     
