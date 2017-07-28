@@ -21,6 +21,7 @@
             {% if tickets_for_sale %}
                 
                 <hr>
+                <br>
                 {% for ticket in tickets_for_sale %}
                     <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }}</p>
                     <p>at <a href="/event/{{ticket.event.id}}"><strong>{{ ticket.event.title }}</strong></a></p>
@@ -30,7 +31,9 @@
                         <input type="hidden" name="ticket_id" value="{{ticket.id}}"><br>
                         <input class="button" type="submit" value="Add to Cart">
                     </form>
+                    <br>
                     <hr>
+                    <br>
                 {% endfor %}
                 <br>
                 <br>
