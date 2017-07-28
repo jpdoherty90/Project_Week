@@ -88,6 +88,9 @@ def login(request):
 #----------------------------------------------------------------
 
 def log_out(request):
+    if 'cart' not in request.session:
+        request.session.clear()
+        return redirect('/')
     if len(request.session['cart']) > 0: 
         return redirect('/log_out/confirm')
     else:
