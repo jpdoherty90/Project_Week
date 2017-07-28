@@ -55,7 +55,7 @@ def register(request):
             request.session['user_id'] = user.id
             request.session['user_name'] = user.first_name
             request.session['cart']=[]
-            if request.session['nli_source']=='sell':
+            if 'nli_source' in request.session and request.session['nli_source']=='sell':
                 return redirect('/sell/{}'.format(request.session['nli_event_id']))
             elif request.session['nli_source']=='cart':
                 return redirect('/buy/{}'.format(request.session['nli_event_id']))
@@ -76,9 +76,9 @@ def login(request):
         request.session['user_id'] = user.id
         request.session['user_name'] = user.first_name
         request.session['cart']=[]
-        if request.session['nli_source']=='sell':
+        if 'nli_source' in request.session and request.session['nli_source']=='sell':
             return redirect('/sell/{}'.format(request.session['nli_event_id']))
-        elif request.session['nli_source']=='cart':
+        elif 'nli_source' in request.session and request.session['nli_source']=='cart':
             return redirect('/buy/{}'.format(request.session['nli_event_id']))
         else:
             return redirect('/')
@@ -251,6 +251,34 @@ def add_to_cart(request):
     x="/"+str(ticket.event.id)
     
     return redirect('/buy'+ x)
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
+def add_to_cart_from(request, parameter):
+    
+    try: 
+        request.session['user_id']
+    except:
+        request.session['nli_source'] = 'cart'
+        return redirect('/log_reg')
+
+    if 'cart' not in request.session:
+        request.session['cart']=[]
+    request.session.modified = True
+    ticket_id= request.POST['ticket_id']
+    ticket = Ticket.objects.get(id=ticket_id)
+    Ticket.objects.filter(id=ticket_id).update(available=False)
+   
+    request.session['cart'].append(ticket_id)
+
+    x="/"+str(parameter)
+    
+    return redirect('/acc_info'+ x)
+
+
+
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------

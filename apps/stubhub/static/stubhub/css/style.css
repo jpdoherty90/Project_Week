@@ -386,3 +386,26 @@ div.overview_info h3{
 div.confirm_center{
     text-align: center;
 }
+
+.ticket_row {
+    display: inline-block;
+    width: 30%;
+    border-left: 1px solid gray;
+    height: auto;
+    padding: 10px;
+    vertical-align: top;
+}
+
+#event_info {
+    display: inline-block;
+    width: 40%;
+    vertical-align: top;
+    text-align: center;
+}
+
+#event_pic {
+    display: inline-block;
+    width: 40%;
+    vertical-align: top;
+    border: 5px solid #FF5722; 
+}
