@@ -18,10 +18,12 @@ def index(request):
         user = User.objects.get(id=request.session['user_id'])
     except:
         user = None
+    
+    today = datetime.now()
 
-    all_events = Event.objects.order_by('event_date_time', 'popularity_score')
+    all_events = Event.objects.filter(visible_until__gte=today).order_by('event_date_time', 'popularity_score')
     categories = Category.objects.order_by('tag')
-    print categories
+
     context = {
         'selected_events': all_events,
         'categories': categories,
@@ -450,12 +452,13 @@ def order_confirmation(request):
 def search_results(request):
     search_field = request.session['search_field']
     search_info = request.session['search_info']
+    today = datetime.now()
     if search_field == 'text':
-        selected_events = Event.objects.filter(title__contains=search_info)|Event.objects.filter(venue__name__contains=search_info)|Event.objects.filter(performers__name__contains=search_info)
+        selected_events = Event.objects.filter(visible_until__gte=today).filter(title__contains=search_info)|Event.objects.filter(visible_until__gte=today).filter(venue__name__contains=search_info)|Event.objects.filter(visible_until__gte=today).filter(performers__name__contains=search_info)
     elif search_field == 'category':
         category = Category.objects.get(display_tag=search_info)
         category_ref = category.seatgeek_ref
-        selected_events = Event.objects.filter(category=category)|Event.objects.filter(category__parent_ref=category_ref)
+        selected_events = Event.objects.filter(visible_until__gte=today).filter(category=category)|Event.objects.filter(visible_until__gte=today).filter(category__parent_ref=category_ref)
     elif search_field == 'date':
             selected_events = Event.objects.filter(event_date_time__contains=search_info)    
     num_results = len(selected_events)
