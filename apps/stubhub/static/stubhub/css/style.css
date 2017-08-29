@@ -29,6 +29,10 @@ div#events_list{
     margin: auto;
     text-align:center;
 }
+div.list_container{
+    overflow: scroll;
+    height: 550px;
+}
 div.event{
     background-color: white;
      
