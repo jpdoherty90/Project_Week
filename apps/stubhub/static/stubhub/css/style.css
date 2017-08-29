@@ -24,24 +24,28 @@ div#events_list{
     column-gap: 2px;
     columns:4; 
     width: 90%;
-    max-width: 970px;
+    width: 970px;
     /* max-height: 970px;  */
     margin: auto;
     text-align:center;
 }
-div.list_container{
-    overflow: scroll;
-    height: 400px;
-}
 div.event{
     background-color: white;
-    display: inline-block;
+     
     width:200px;
     height:auto;
     padding:10px;
     margin-bottom:5px;
     box-shadow: .5px .5px 5px #888888;
-}  
+} 
+
+div.list_container{
+    overflow: scroll;
+    height: 400px;
+    width:970px;
+    margin:auto;
+}
+ 
 
 .nav_link {
     color: white;
