@@ -11,9 +11,6 @@ main contrbution was making the buying and selling routes, allowing user to post
 Julian built the checkout/payment functionality as well as most of the CSS/styling for the project.  Alyssa built the
 aforementioned API call as well as much of the models and validations.
 
-  This project is not currently deployed although deploying it to Heroku is on my immediate to-do list and should be completed
-within a week of this writing.
-
   This was our first group project and first web app that took more than a day or two.  It has been over 3 months since we
 completed this project. Since then I have been learning and will continue to learn about OOP, design patterns, and best 
 practices, and I'm sure if I were to refactor this project in a few months there will be a lot of changes to be made. That
