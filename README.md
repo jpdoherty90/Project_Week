@@ -14,8 +14,6 @@ aforementioned API call as well as much of the models and validations.
   This was our first group project and first web app that took more than a day or two.  It has been over 3 months since we
 completed this project. Since then I have been learning and will continue to learn about OOP, design patterns, and best 
 practices, and I'm sure if I were to refactor this project in a few months there will be a lot of changes to be made. That
-is the nature of learning and getting better.
-
-#
+is in the nature of learning and getting better.
 
 
