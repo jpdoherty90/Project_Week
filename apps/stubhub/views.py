@@ -1,15 +1,11 @@
 from __future__ import unicode_literals
 from django.shortcuts import render, redirect, HttpResponse
 from django.db.models import Avg
-
 from models import User, Ticket, Event, Performer, Venue, Category, Purchase
 from django.contrib import messages
 import re, bcrypt, json, requests
 from pprint import pprint
 from datetime import datetime
-
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
 
 
 def index(request):
@@ -18,26 +14,18 @@ def index(request):
         user = User.objects.get(id=request.session['user_id'])
     except:
         user = None
-    
     today = datetime.now()
-
     all_events = Event.objects.filter(visible_until__gte=today).order_by('event_date_time', 'popularity_score')
     categories = Category.objects.order_by('tag')
-
     context = {
         'selected_events': all_events,
         'categories': categories,
         'user': user
     }
-
     return render(request, 'stubhub/home.html', context)
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
-
 def register(request):
-    
     errors = User.objects.new_user_validator(request.POST)
     if len(errors):
         for tag, error in errors.iteritems():
@@ -48,16 +36,12 @@ def register(request):
         last =  request.POST['last_name']
         mail = request.POST['email']
         hash1 = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
- 
         user = User.objects.create(first_name=first, last_name=last, email=mail, password_hash=hash1)
-
         if not user:
             messages.add_message(request, messages.ERROR, "User email already exists.")
             return redirect("/")
         else:
-            request.session['user_id'] = user.id
-            request.session['user_name'] = user.first_name
-            request.session['cart']=[]
+            setSession(request, user)
             if 'nli_source' in request.session and request.session['nli_source']=='sell':
                 return redirect('/sell/{}'.format(request.session['nli_event_id']))
             elif request.session['nli_source']=='cart':
@@ -65,20 +49,20 @@ def register(request):
             else:
                 return redirect('/')
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+def setSession(request, user):
+    request.session['user_id'] = user.id
+    request.session['user_name'] = user.first_name
+    request.session['cart']=[]
+
 
 def login(request):
     errors = User.objects.login_validator(request.POST)
-    email = request.POST['email']
     if len(errors):
-        messages.add_message(request, messages.ERROR, "Invalid email or password.")
-        return redirect("/log_reg")
+        return invalidLogin(request)
     else:
+        email = request.POST['email']
         user = User.objects.get(email=email)
-        request.session['user_id'] = user.id
-        request.session['user_name'] = user.first_name
-        request.session['cart']=[]
+        setSession(request, user)
         if 'nli_source' in request.session and request.session['nli_source']=='sell':
             return redirect('/sell/{}'.format(request.session['nli_event_id']))
         elif 'nli_source' in request.session and request.session['nli_source']=='cart':
@@ -86,8 +70,11 @@ def login(request):
         else:
             return redirect('/')
 
-#-----------------------------------------------------------------
-#----------------------------------------------------------------
+
+def invalidLogin(request):
+    messages.add_message(request, messages.ERROR, "Invalid email or password.")
+    return redirect("/log_reg")
+
 
 def log_out(request):
     if 'cart' not in request.session:
@@ -98,14 +85,11 @@ def log_out(request):
     else:
         request.session.clear()
         return redirect("/")
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def log_out_confirm(request):
     return render(request, 'stubhub/log_out_confirm.html')
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
 
 def remove_all_from_cart(request):
     request.session.modified = True
@@ -114,15 +98,11 @@ def remove_all_from_cart(request):
     request.session['cart']=[]
     return redirect('/log_out')
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def init_sale(request, parameter):
-    
-    # Overwriting the sell attribute of request.session now that we've reached the end of the sell-search-path
     request.session['sell_path'] = False
     request.session.modified = True
-    # Make sure user is logged in, if not, force them to log-in first
     try: 
         request.session['user_id']
     except:
@@ -151,8 +131,7 @@ def init_sale(request, parameter):
 
     return render(request, 'stubhub/init_sale.html', context)
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def post_tickets(request, parameter):
     
@@ -183,8 +162,7 @@ def post_tickets(request, parameter):
 
     return redirect(url)
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 
 def ticket_posted(request, parameter):
@@ -198,14 +176,12 @@ def ticket_posted(request, parameter):
 
     return render(request, 'stubhub/sell_success.html', context)
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def log_reg(request):
     return render (request,"stubhub/login.html")
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def acc_info(request, parameter):
     
@@ -229,8 +205,7 @@ def acc_info(request, parameter):
     else:
         return render(request,"stubhub/show_user.html",context)
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def cart(request):
     request.session.modified = True
@@ -252,11 +227,9 @@ def cart(request):
 
     return render (request,"stubhub/cart.html",context)
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def add_to_cart(request):
-    # Make sure user is logged in, if not, force them to log-in first
     try: 
         request.session['user_id']
     except:
@@ -276,8 +249,6 @@ def add_to_cart(request):
     return redirect('/buy'+ x)
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
 
 def add_to_cart_from(request, parameter):
     
@@ -303,9 +274,6 @@ def add_to_cart_from(request, parameter):
 
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
-
 def remove_from_cart(request,parameter):
     request.session.modified = True
     ticket_id=parameter
@@ -314,8 +282,7 @@ def remove_from_cart(request,parameter):
     Ticket.objects.filter(id=ticket_id).update(available=True)
     ticket = Ticket.objects.get(id=ticket_id)
     return redirect('/cart')
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def check_out(request):
     request.session.modified = True
@@ -341,16 +308,17 @@ def check_out(request):
                 'total':total,
     } 
     return render(request,'stubhub/check_out.html',context)
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
+
+
 def payment_shipping (request):
     
     return render(request,'stubhub/payment_shipping.html')
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
+
+
 def order_review(request):
     error=True
-    # Card Verify
     if len(request.POST['card_number']) < 3:
         messages.add_message(request, messages.ERROR,"Please enter valid credit card number",extra_tags='CC')
         error=True
@@ -420,13 +388,11 @@ def order_review(request):
         }
         return render(request,'stubhub/order_review.html',context)
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 def purchase(request):
 
     return redirect('/confirmation.html')
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def order_confirmation(request):
     user = User.objects.get(id=request.session['user_id'])
@@ -446,8 +412,7 @@ def order_confirmation(request):
     
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def search_results(request):
     search_field = request.session['search_field']
@@ -471,8 +436,7 @@ def search_results(request):
     }
     return render(request, 'stubhub/search_results.html', context)
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def process_search(request):
     if request.method == 'POST':
@@ -493,8 +457,7 @@ def process_search(request):
         return redirect('/')
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 
 def show_event(request, parameter):
@@ -508,13 +471,11 @@ def show_event(request, parameter):
     return render(request, 'stubhub/show_event.html', context)
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
+
 
 def buy_tix(request, parameter):
     
     event = Event.objects.get(id=parameter)
-    # Used to exclude tickets the logged in user has posted from the display of available tickets for the event
     try: 
         curr_user_id = request.session['user_id']
     except:
@@ -547,8 +508,6 @@ def buy_tix(request, parameter):
     return render(request, 'stubhub/buy_tix.html', context)
 
 
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
 
 
 def geo(request, lat, lon):
@@ -641,10 +600,6 @@ def geo(request, lat, lon):
     return redirect('/');
 
     
-
-
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
 def sell_search(request):
     request.session['sell_path'] = True
     categories = Category.objects.order_by('tag')
@@ -652,7 +607,3 @@ def sell_search(request):
         'categories': categories,
     }
     return render(request, 'stubhub/sell_search.html', context)
-
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
-
