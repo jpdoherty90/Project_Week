@@ -7,6 +7,7 @@ import re, bcrypt, json, requests
 from pprint import pprint
 from datetime import datetime
 
+
 def index(request):
     request.session['nli_source']='None'
     try: 
@@ -39,6 +40,7 @@ def register(request):
             setSession(request, user)
             return handleNliSource(request)
 
+
 def generateNewUser(request):
     first =  request.POST['first_name']
     last =  request.POST['last_name']
@@ -47,15 +49,17 @@ def generateNewUser(request):
     user = User.objects.create(first_name=first, last_name=last, email=mail, password_hash=hash1)
     return user
 
+
 def setSession(request, user):
     request.session['user_id'] = user.id
     request.session['user_name'] = user.first_name
     request.session['cart']=[]
 
+
 def handleNliSource(request):
-    if 'nli_source' in request.session and request.session['nli_source']=='sell':
+    if 'nli_source' in request.session and request.session['nli_source'] == 'sell':
         return redirect('/sell/{}'.format(request.session['nli_event_id']))
-    elif 'nli_source' in request.session and request.session['nli_source']=='cart':
+    elif 'nli_source' in request.session and request.session['nli_source'] == 'cart':
         return redirect('/buy/{}'.format(request.session['nli_event_id']))
     else:
         return redirect('/')
@@ -98,7 +102,7 @@ def remove_all_from_cart(request):
 
 def init_sale(request, parameter):
     request.session['sell_path'] = False
-    if not userLoggedIn():
+    if not userLoggedIn(request):
         request.session['nli_source'] = 'sell'
         request.session['nli_event_id'] = parameter
         return redirect('/log_reg')
@@ -115,14 +119,16 @@ def init_sale(request, parameter):
     return render(request, 'stubhub/init_sale.html', context)
 
 
-def userLoggedIn():
+def userLoggedIn(request):
     if request.session['user_id']:
         return True
     return False
 
+
 def getEvent(id):
     event = Event.objects.get(id=event_id)
     return event
+
 
 def log_reg(request):
     return render (request,"stubhub/login.html")
@@ -156,6 +162,7 @@ def getCurrentuser():
     user = User.objects.get(id=userId)
     return user
 
+
 def ticket_posted(request, parameter):
     event = getEvent(parameter)
     context = {
@@ -173,45 +180,54 @@ def acc_info(request, parameter):
         'user': user,
         'tickets_for_sale': tickets_for_sale,
         'tickets_sold': tickets_sold,
-        'tickets_bought': tickets_bought,
+        'tickets_bought': tickets_bought
     }
-    if userLoggedIn() and request.session['user_id'] == user.id:
+    if userLoggedIn(request) and request.session['user_id'] == user.id:
         return render(request,"stubhub/acc_info.html",context)
     else:
         return render(request,"stubhub/show_user.html",context)
 
 
 def cart(request):
+    context = getCartContext()
+    return render (request,"stubhub/cart.html",context)
+
+
+def getCartContext():
     item_ids = request.session['cart']
     items = []
     total=0
     for item_id in item_ids:
-        ticket=Ticket.objects.get(id=item_id)
+        ticket = Ticket.objects.get(id=item_id)
         items.append(ticket)
     for ticket in items:
-        total+=int(ticket.price)
-    context = { 'user': User.objects.get(id=request.session['user_id']),
-                'items': items,
-                'total':total,
+        total += int(ticket.price)
+    request.session['total'] = total
+    context = { 
+        'user': getCurrentuser(),
+        'items': items,
+        'total':total,
     }
-    return render (request,"stubhub/cart.html",context)
+    return context
 
 
 def add_to_cart(request):
-    if not userLoggedIn():
+    if not userLoggedIn(request):
         return goToLogRegFromCart()
     initializeCart()
     string = updateTicketAvailability()
     x = "/" + str(string)
     return redirect('/buy'+ x)
 
+
 def add_to_cart_from(request, parameter):
-    if not userLoggedIn():
+    if not userLoggedIn(request):
         return goToLogRegFromCart()
     initializeCart()
     updateTicketAvailability()
     x = "/" + str(parameter)
     return redirect('/acc_info'+ x)
+
 
 def updateTicketAvailability(request):
     ticket_id = request.POST['ticket_id']
@@ -220,108 +236,91 @@ def updateTicketAvailability(request):
     request.session['cart'].append(ticket_id)
     return ticket.event.id
 
+
 def goToLogRegFromCart():
     request.session['nli_source'] = 'cart'
     return redirect('/log_reg')
+
 
 def initializeCart():
     if 'cart' not in request.session:
         request.session['cart']=[]
 
+
 def remove_from_cart(request,parameter):
-    ticket_id=parameter
+    ticket_id = parameter
     request.session['cart'].remove(ticket_id)
-    items=request.session['cart']
     Ticket.objects.filter(id=ticket_id).update(available=True)
-    ticket = Ticket.objects.get(id=ticket_id)
     return redirect('/cart')
 
 
 def check_out(request):
-    if request.session['cart']==[]:
-        messages.add_message(request, messages.ERROR, "Your Cart is Empty",extra_tags='CE')
-        return redirect("/cart")
-    item_ids = request.session['cart']
-    items = []
-    total=0
-    for item_id in item_ids:
-        ticket=Ticket.objects.get(id=item_id)
-        items.append(ticket)
-    for ticket in items:
-        total+=int(ticket.price)
-    request.session['total']= total
-    context = { 'user': User.objects.get(id=request.session['user_id']),
-                'items': items,
-                'total':total,
-    } 
+    if cartIsEmpty():
+        return displayEmptyCartMsg(request)
+    context = getCartContext()
     return render(request,'stubhub/check_out.html',context)
 
 
-def payment_shipping (request):
+def cartIsEmpty():
+    return request.session['cart'] == []
+
+
+def displayEmptyCartMsg(request):
+    messages.add_message(request, messages.ERROR, "Your Cart is Empty",extra_tags='CE')
+    return redirect("/cart")
+
+
+def payment_shipping(request):
     return render(request,'stubhub/payment_shipping.html')
 
 
 def order_review(request):
-    error=True
-    if len(request.POST['card_number']) < 3:
-        messages.add_message(request, messages.ERROR,"Please enter valid credit card number",extra_tags='CC')
-        error=True
-    if len(request.POST['last_name'])< 3:
-        messages.add_message(request, messages.ERROR, "Please enter name", extra_tags='CC')
-        error=True
-    if len(request.POST['month'] or request.POST['year'])< 3:
-        messages.add_message(request, messages.ERROR, "Please enter valid expiration", extra_tags='CC')
-        error=True
-    if len(request.POST['cvv'])< 3:
-        messages.add_message(request, messages.ERROR, "Please enter CVV", extra_tags='CC')
-        error=True
-    if len(request.POST['address'])<5:
-        messages.add_message(request, messages.ERROR, "Please enter full address", extra_tags='AD')
-        error=True
-    if len(request.POST['full_name'])<5:
-        messages.add_message(request, messages.ERROR, "Please enter resident name", extra_tags='AD')
-        error=True
-    if len(request.POST['state']) <2 :
-        messages.add_message(request, messages.ERROR, "Please enter state", extra_tags='AD')
-        error=True
-    else:
-        error=False
-    if error==True:
-        return redirect('/payment_shipping')
-    else:
-        request.session['card']={
-            'first_name': request.POST['first_name'],
-            'last_name': request.POST['last_name'],
-            'card_number': request.POST['card_number'],
-            'exp_month':request.POST['month'],
-            'exp_year': request.POST['year']
-        }
-        card = request.session['card']
-        request.session['address']={
-            'full_name': request.POST['full_name'],
-            'address': request.POST['address'],
-            'zip': request.POST['card_number'],
-            'city':request.POST['city'],
-            'state': request.POST['state'],
-            'country':request.POST['country']
-        }
-        address= request.session['address']
-        card_num=request.POST['card_number']
-        last_four = card_num[-4:]
-        items = []
-        item_ids = request.session['cart']
-        for item_id in item_ids:
-            ticket=Ticket.objects.get(id=item_id)
-            items.append(ticket)
-        total = request.session['total']
-        context = { 'user': User.objects.get(id=request.session['user_id']),
-                    'items': items,
-                    'total':total,
-                    'card':card,
-                    'address':address,
-                    'last_four':last_four
-        }
-        return render(request,'stubhub/order_review.html',context)
+    cardNumber = request.POST['card_number']
+    creditCard = getCreditCard(request)
+    addrress = getAddress(request)
+    request.session['card'] = creditCard
+    request.session['address'] = address
+    context = { 
+        'user': User.objects.get(id=request.session['user_id']),
+        'items': getItems(request),
+        'total': request.session['total'],
+        'card': card,
+        'address': address,
+        'last_four': cardNumber[-4:]
+    }
+    return render(request,'stubhub/order_review.html',context)
+
+
+def getCreditCard(request):
+    creditCard = {
+        'first_name': request.POST['first_name'],
+        'last_name': request.POST['last_name'],
+        'card_number': cardNumber,
+        'exp_month':request.POST['month'],
+        'exp_year': request.POST['year']
+    }
+    return creditCard
+
+
+def getAddress(request):
+    addrress = {
+        'full_name': request.POST['full_name'],
+        'address': request.POST['address'],
+        'zip': request.POST['zip'],
+        'city':request.POST['city'],
+        'state': request.POST['state'],
+        'country':request.POST['country']
+    }
+    return address
+
+
+def getItems(request):
+    items = []
+    item_ids = request.session['cart']
+    for item_id in item_ids:
+        ticket = Ticket.objects.get(id=item_id)
+        items.append(ticket)
+    return items
 
 
 def purchase(request):
@@ -330,17 +329,28 @@ def purchase(request):
 
 def order_confirmation(request):
     user = getCurrentuser()
-    items=[]
-    item_ids = request.session['cart']
-    for item_id in item_ids:
-        ticket=Ticket.objects.get(id=item_id)
-        items.append(ticket)
+    items = getItems(request)
     for ticket in items:
         Ticket.objects.filter(id=ticket.id).update(buyer=user)
     request.session['total'] = 0
-    request.session['cart']=[]
+    request.session['cart'] = []
     return render(request,'stubhub/confirmation.html')
     
+
+def process_search(request):
+    if len(request.POST['text_search']) > 0:
+        search_info = request.POST['text_search']
+        request.session['search_field'] = 'text'
+    elif len(request.POST['event_date']) > 0:
+        search_info = request.POST['event_date']
+        request.session['search_field'] = 'date'
+    elif len(request.POST['category']) > 0:
+        search_info = request.POST['category']
+        request.session['search_field'] = 'category'
+    else:
+        return redirect('/')
+    request.session['search_info'] = search_info
+    return redirect('/search')
 
 
 def search_results(request):
@@ -348,13 +358,11 @@ def search_results(request):
     search_info = request.session['search_info']
     today = datetime.now()
     if search_field == 'text':
-        selected_events = Event.objects.filter(visible_until__gte=today).filter(title__contains=search_info)|Event.objects.filter(visible_until__gte=today).filter(venue__name__contains=search_info)|Event.objects.filter(visible_until__gte=today).filter(performers__name__contains=search_info)
+        selected_events = processTextSearch(search_info)
     elif search_field == 'category':
-        category = Category.objects.get(display_tag=search_info)
-        category_ref = category.seatgeek_ref
-        selected_events = Event.objects.filter(visible_until__gte=today).filter(category=category)|Event.objects.filter(visible_until__gte=today).filter(category__parent_ref=category_ref)
+        selected_events = processCategorySearch(search_info)
     elif search_field == 'date':
-            selected_events = Event.objects.filter(event_date_time__contains=search_info)    
+        selected_events = Event.objects.filter(event_date_time__contains=search_info)    
     num_results = len(selected_events)
     categories = Category.objects.order_by('tag')
     context = {
@@ -366,58 +374,38 @@ def search_results(request):
     return render(request, 'stubhub/search_results.html', context)
 
 
+def processTextSearch(text):
+    titleMatches = Event.objects.filter(visible_until__gte=today).filter(title__contains=text)
+    venueMatches = Event.objects.filter(visible_until__gte=today).filter(venue__name__contains=text)
+    performerMatches = Event.objects.filter(visible_until__gte=today).filter(performers__name__contains=text)
+    return titleMatches|venueMatches|performerMatches
 
-def process_search(request):
-    if request.method == 'POST':
-        if len(request.POST['text_search'])>0:
-            search_info=request.POST['text_search']
-            request.session['search_field']='text'
-        elif len(request.POST['event_date'])>0:
-            search_info = request.POST['event_date']
-            request.session['search_field']= 'date'
-        elif len(request.POST['category'])>0:
-            search_info = request.POST['category']
-            request.session['search_field'] = 'category'
-        else:
-            return redirect('/')
-        request.session['search_info'] = search_info
-        return redirect('/search')
-    else:
-        return redirect('/')
 
+def processCategorySearch(searchedCategory):
+    category = Category.objects.get(display_tag=searchedCategory)
+    category_ref = category.seatgeek_ref
+    categoryMatches = Event.objects.filter(visible_until__gte=today).filter(category=category)
+    categoryParentMatches = Event.objects.filter(visible_until__gte=today).filter(category__parent_ref=category_ref)
+    return categoryMatches|categoryParentMatches
 
 
 def show_event(request, parameter):
     event = Event.objects.get(id=parameter)
-    context = {
-        "event": event,
-    }
+    context = { "event": event }
     return render(request, 'stubhub/show_event.html', context)
 
 
 def buy_tix(request, parameter):
-    event = Event.objects.get(id=parameter)
-    try: 
-        curr_user_id = request.session['user_id']
-    except:
+    event = getEvent(parameter)
+    if userLoggedIn(request):
+        currentUserId = request.session['user_id']
+    else:
         request.session['nli_event_id'] = parameter
-        curr_user_id = -1
+        currentUserId = -1
     if request.method == "GET":
-        available_tix = Ticket.objects.filter(available=True, event=event).exclude(seller=curr_user_id).order_by("seat_letter").order_by("seat_num")
+        available_tix = Ticket.objects.filter(available=True, event=event).exclude(seller=currentUserId).order_by("seat_letter", "seat_num")
     elif request.method == "POST":
-        if request.POST['filter_by'] == "seat":
-            available_tix = Ticket.objects.filter(available=True, event=event).order_by("seat_letter").order_by("seat_num")
-        elif request.POST['filter_by'] == "price_asc":
-            available_tix = Ticket.objects.filter(available=True, event=event).order_by("price")
-        elif request.POST['filter_by'] == "price_desc":
-            available_tix = Ticket.objects.filter(available=True, event=event).order_by("-price")
-        elif request.POST['filter_by'] == "best_value":
-            average_price_dict = Ticket.objects.filter(available=True, event=event).aggregate(Avg('price'))
-            average_price = average_price_dict['price__avg']
-            available_tix = Ticket.objects.filter(available=True, event=event)
-            for ticket in available_tix:
-                ticket.value = (1/float(ticket.seat_num))/(float(average_price)/float(ticket.price))
-            available_tix = sorted(available_tix, key=lambda ticket: ticket.value, reverse=True)
+        available_tix = orderAvailableTickets(request, event)
     context = {
         "event": event,
         "available_tix": available_tix,
@@ -425,41 +413,44 @@ def buy_tix(request, parameter):
     return render(request, 'stubhub/buy_tix.html', context)
 
 
+def orderAvailableTickets(request, event):
+    availableTickets = Ticket.objects.filter(available=True, event=event)
+    filterBy = request.POST['filter_by']
+    if filterBy == "seat":
+        availableTickets = availableTickets.order_by("seat_letter").order_by("seat_num")
+    elif filterBy == "price_asc":
+        availableTickets = availableTickets.order_by("price")
+    elif filterBy == "price_desc":
+        availableTickets = availableTickets.order_by("-price")
+    elif filterBy == "best_value":
+        average_price_dict = availableTickets.aggregate(Avg('price'))
+        average_price = average_price_dict['price__avg']
+        for ticket in availableTickets:
+            ticket.value = (1/float(ticket.seat_num))/(float(average_price)/float(ticket.price))
+        availableTickets = sorted(availableTickets, key=lambda ticket: ticket.value, reverse=True)
+    return availableTickets
+
 
 def geo(request, lat, lon):
-    def get_data(url):
-        response = requests.get(url)
-        return json.loads(response.text)
-    venue_url = "https://api.seatgeek.com/2/venues?lat="
-    venue_url += str(lat)
-    venue_url += "&lon="
-    venue_url += str(lon)
+    venue_url = "https://api.seatgeek.com/2/venues?lat=" + str(lat) + "&lon=" + str(lon)
     venue_url += "&range=5mi&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100"
-    all_local_venue_data = get_data(venue_url)
-    all_venues = all_local_venue_data['venues']
-    for venue in all_venues:
-        name = venue['name']
-        address = venue['address']
-        extended_address = venue['extended_address']
-        try:
-            Venue.objects.get(name=name)
-        except:
-            Venue.objects.create(name=name, address=address, extended_address=extended_address)
-    event_url = "https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&lat="
-    event_url += str(lat)
-    event_url += "&lon="
-    event_url += str(lon)
+    allLocalVenueData = getData(venue_url)
+    allVenues = allLocalVenueData['venues']
+    addVenuesToDatabaseIfNecessary(allVenues)
+
+    event_url = "https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&lat=" + str(lat) + "&lon=" + str(lon)
     event_url += "&range=5mi&per_page=1000&sort=datetime_local.asc&score.gt=0.5"
-    all_event_data = get_data(event_url)
-    all_events = all_event_data['events']
-    for event in all_events:
+    allEventData = getData(event_url)
+    allEvents = allEventData['events']
+    addPerformersAndTaxonomiesToDatabase(allEvents)
+    for event in allEvents:
         for performer in event['performers']:
             name = performer['name']
             try:
                 Performer.objects.get(name=name)
             except:
                 Performer.objects.create(name=name)
-    for event in all_events:
+    for event in allEvents:
         taxonomies = event['taxonomies']
         for category in taxonomies:
             tag = category['name']
@@ -471,7 +462,7 @@ def geo(request, lat, lon):
             Category.objects.get(tag=tag)
         except:
             Category.objects.create(tag=tag, seatgeek_ref=seatgeek_ref,parent_ref=parent_ref, display_tag=display_tag)
-    for event in all_events:
+    for event in allEvents:
         title =  event['title']
         short_title = event['short_title']
         event_date_time = datetime.strptime(event['datetime_local'], "%Y-%m-%dT%H:%M:%S")
@@ -501,10 +492,24 @@ def geo(request, lat, lon):
     return redirect('/');
 
 
+def getData(url):
+    response = requests.get(url)
+    return json.loads(response.text)
+
+
+def addVenuesToDatabaseIfNecessary(venues):
+    for venue in venues:
+        name = venue['name']
+        address = venue['address']
+        extended_address = venue['extended_address']
+        try:
+            Venue.objects.get(name=name)
+        except:
+            Venue.objects.create(name=name, address=address, extended_address=extended_address)
+
+
 def sell_search(request):
     request.session['sell_path'] = True
     categories = Category.objects.order_by('tag')
-    context = {
-        'categories': categories,
-    }
+    context = { 'categories': categories }
     return render(request, 'stubhub/sell_search.html', context)
