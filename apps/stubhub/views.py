@@ -8,25 +8,21 @@ from pprint import pprint
 from datetime import datetime
 
 
+
 def index(request):
-    request.session['nli_source']='None'
-    try: 
-        user = User.objects.get(id=request.session['user_id'])
-    except:
-        user = None
+    request.session['nli_source'] = 'None'
     today = datetime.now()
     all_events = Event.objects.filter(visible_until__gte=today).order_by('event_date_time', 'popularity_score')
     categories = Category.objects.order_by('tag')
     context = {
         'selected_events': all_events,
         'categories': categories,
-        'user': user
     }
     return render(request, 'stubhub/home.html', context)
 
 
 def register(request):
-    errors = User.objects.new_user_validator(request.POST)
+    errors = User.objects.newUserValidator(request.POST)
     if len(errors):
         for tag, error in errors.iteritems():
             messages.add_message(request, messages.ERROR, errors[tag])
@@ -66,7 +62,7 @@ def handleNliSource(request):
 
 
 def login(request):
-    errors = User.objects.login_validator(request.POST)
+    errors = User.objects.loginValidator(request.POST)
     if len(errors):
         return invalidLogin(request)
     else:
@@ -93,7 +89,7 @@ def log_out_confirm(request):
     return render(request, 'stubhub/log_out_confirm.html')
 
 
-def remove_all_from_cart(request):
+def removeAllFromCart(request):
     for ticket_id in request.session['cart']:
         Ticket.objects.filter(id=ticket_id).update(available=True)
     request.session['cart']=[]
@@ -107,7 +103,7 @@ def init_sale(request, parameter):
         request.session['nli_event_id'] = parameter
         return redirect('/log_reg')
     event = getEvent(parameter)
-    num_tix = request.POST['num_tix']
+    num_tix = request.POST.get('num_tix', False)
     tix = []
     for i in range(1, int(num_tix) + 1):
         tix.append(i)
@@ -125,8 +121,8 @@ def userLoggedIn(request):
     return False
 
 
-def getEvent(id):
-    event = Event.objects.get(id=event_id)
+def getEvent(eventId):
+    event = Event.objects.get(id=eventId)
     return event
 
 
@@ -143,21 +139,16 @@ def post_tickets(request, parameter):
 
 
 def createTickets(request, event):
-    seller = getCurrentuser()
+    seller = getCurrentuser(request)
     num_tix = request.POST['num_tix']
     price = request.POST['price']
     for i in range(int(num_tix)):
         seat = "seat_" + str(i+1) 
         seat = request.POST[seat]
-        reg = re.compile(r'(?P<numbers>\d*)(?P<letters>.*)')
-        result = reg.search(seat)
-        if result:
-            numbers = result.group('numbers')
-            letters = result.group('letters')
-        Ticket.objects.create(event=event, seller=seller, seat_num=numbers, seat_letter=letters, price=price)
+        Ticket.objects.create(event=event, seller=seller, seat=seat, price=price)
 
 
-def getCurrentuser():
+def getCurrentuser(request):
     userId = request.session['user_id']
     user = User.objects.get(id=userId)
     return user
@@ -189,11 +180,11 @@ def acc_info(request, parameter):
 
 
 def cart(request):
-    context = getCartContext()
+    context = getCartContext(request)
     return render (request,"stubhub/cart.html",context)
 
 
-def getCartContext():
+def getCartContext(request):
     item_ids = request.session['cart']
     items = []
     total=0
@@ -204,7 +195,7 @@ def getCartContext():
         total += int(ticket.price)
     request.session['total'] = total
     context = { 
-        'user': getCurrentuser(),
+        'user': getCurrentuser(request),
         'items': items,
         'total':total,
     }
@@ -214,8 +205,11 @@ def getCartContext():
 def add_to_cart(request):
     if not userLoggedIn(request):
         return goToLogRegFromCart()
-    initializeCart()
-    string = updateTicketAvailability()
+    if 'cart' not in request.session:
+        initializeCart(request)
+    ticketId = request.POST['ticket_id']
+    string = updateTicketAvailability(request, ticketId)
+    request.session['cart'].append(ticketId)
     x = "/" + str(string)
     return redirect('/buy'+ x)
 
@@ -223,17 +217,19 @@ def add_to_cart(request):
 def add_to_cart_from(request, parameter):
     if not userLoggedIn(request):
         return goToLogRegFromCart()
-    initializeCart()
-    updateTicketAvailability()
+    if 'cart' not in request.session:
+        initializeCart(request)
+    ticketId = request.POST['ticket_id']
+    updateTicketAvailability(request, ticketId)
+    request.session['cart'].append(ticketId)
     x = "/" + str(parameter)
     return redirect('/acc_info'+ x)
 
 
-def updateTicketAvailability(request):
-    ticket_id = request.POST['ticket_id']
-    ticket = Ticket.objects.get(id=ticket_id)
-    Ticket.objects.filter(id=ticket_id).update(available=False)
-    request.session['cart'].append(ticket_id)
+def updateTicketAvailability(request, ticketId):
+    ticket = Ticket.objects.get(id=ticketId)
+    Ticket.objects.filter(id=ticketId).update(available=False)
+    request.session['cart'].append(ticketId)
     return ticket.event.id
 
 
@@ -242,9 +238,8 @@ def goToLogRegFromCart():
     return redirect('/log_reg')
 
 
-def initializeCart():
-    if 'cart' not in request.session:
-        request.session['cart']=[]
+def initializeCart(request):
+    request.session['cart']=[]
 
 
 def remove_from_cart(request,parameter):
@@ -257,7 +252,7 @@ def remove_from_cart(request,parameter):
 def check_out(request):
     if cartIsEmpty():
         return displayEmptyCartMsg(request)
-    context = getCartContext()
+    context = getCartContext(request)
     return render(request,'stubhub/check_out.html',context)
 
 
@@ -328,7 +323,7 @@ def purchase(request):
 
 
 def order_confirmation(request):
-    user = getCurrentuser()
+    user = getCurrentuser(request)
     items = getItems(request)
     for ticket in items:
         Ticket.objects.filter(id=ticket.id).update(buyer=user)
@@ -403,9 +398,9 @@ def buy_tix(request, parameter):
         request.session['nli_event_id'] = parameter
         currentUserId = -1
     if request.method == "GET":
-        available_tix = Ticket.objects.filter(available=True, event=event).exclude(seller=currentUserId).order_by("seat_letter", "seat_num")
+        available_tix = Ticket.objects.filter(available=True, event=event).exclude(seller=currentUserId).order_by("seat")
     elif request.method == "POST":
-        available_tix = orderAvailableTickets(request, event)
+        available_tix = putAvailableTicketsInOrder(request, event)
     context = {
         "event": event,
         "available_tix": available_tix,
@@ -413,44 +408,36 @@ def buy_tix(request, parameter):
     return render(request, 'stubhub/buy_tix.html', context)
 
 
-def orderAvailableTickets(request, event):
+def putAvailableTicketsInOrder(request, event):
     availableTickets = Ticket.objects.filter(available=True, event=event)
     filterBy = request.POST['filter_by']
     if filterBy == "seat":
-        availableTickets = availableTickets.order_by("seat_letter").order_by("seat_num")
+        availableTickets = availableTickets.order_by("seat")
     elif filterBy == "price_asc":
         availableTickets = availableTickets.order_by("price")
     elif filterBy == "price_desc":
         availableTickets = availableTickets.order_by("-price")
-    elif filterBy == "best_value":
-        average_price_dict = availableTickets.aggregate(Avg('price'))
-        average_price = average_price_dict['price__avg']
-        for ticket in availableTickets:
-            ticket.value = (1/float(ticket.seat_num))/(float(average_price)/float(ticket.price))
-        availableTickets = sorted(availableTickets, key=lambda ticket: ticket.value, reverse=True)
     return availableTickets
 
 
 def geo(request, lat, lon):
-    venue_url = "https://api.seatgeek.com/2/venues?lat=" + str(lat) + "&lon=" + str(lon)
-    venue_url += "&range=5mi&client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&per_page=100"
-    allLocalVenueData = getData(venue_url)
-    allVenues = allLocalVenueData['venues']
-    addVenuesToDatabaseIfNecessary(allVenues)
-
-    event_url = "https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&lat=" + str(lat) + "&lon=" + str(lon)
-    event_url += "&range=5mi&per_page=1000&sort=datetime_local.asc&score.gt=0.5"
+    event_url = "https://api.seatgeek.com/2/events?client_id=ODI2MjI2OHwxNTAwOTE1NzYzLjYy&lat=" + str(lat)
+    event_url += "&lon=" + str(lon) + "&range=5mi&per_page=1000&sort=datetime_local.asc&score.gt=0.5"
     allEventData = getData(event_url)
     allEvents = allEventData['events']
-    addPerformersAndTaxonomiesToDatabase(allEvents)
-    for event in allEvents:
-        for performer in event['performers']:
-            name = performer['name']
-            try:
-                Performer.objects.get(name=name)
-            except:
-                Performer.objects.create(name=name)
-    for event in allEvents:
+    addCategoriesToDatabaseIfNecessary(allEvents)
+    addEventsToDatabaseIfNecessary(allEvents)
+    request.session['geo'] = True
+    return redirect('/');
+
+
+def getData(url):
+    response = requests.get(url)
+    return json.loads(response.text)
+
+
+def addCategoriesToDatabaseIfNecessary(events):
+    for event in events:
         taxonomies = event['taxonomies']
         for category in taxonomies:
             tag = category['name']
@@ -462,7 +449,10 @@ def geo(request, lat, lon):
             Category.objects.get(tag=tag)
         except:
             Category.objects.create(tag=tag, seatgeek_ref=seatgeek_ref,parent_ref=parent_ref, display_tag=display_tag)
-    for event in allEvents:
+
+
+def addEventsToDatabaseIfNecessary(events):
+    for event in events:
         title =  event['title']
         short_title = event['short_title']
         event_date_time = datetime.strptime(event['datetime_local'], "%Y-%m-%dT%H:%M:%S")
@@ -472,7 +462,7 @@ def geo(request, lat, lon):
         category = Category.objects.get(tag = event['type'])
         event_venue=event['venue']['name']
         try:
-            venue = Venue.objects.get(name = event_venue)
+            venue = Venue.objects.get(name=event_venue)
         except:
             name = event['venue']['name']
             address = event['venue']['address']
@@ -481,31 +471,15 @@ def geo(request, lat, lon):
         try:
             Event.objects.get(title=title)
         except:
-            this_event = Event.objects.create(title=title, short_title=short_title, event_date_time=event_date_time, visible_until=visible_until, popularity_score=popularity_score, category=category, venue=venue, image=image)
+            thisEvent = Event.objects.create(title=title, short_title=short_title, event_date_time=event_date_time, 
+                                                visible_until=visible_until, popularity_score=popularity_score, 
+                                                category=category, venue=venue, image=image)
             for performer in event['performers']:
                 try:
                     performer = Performer.objects.get(name=name)
                 except:
                     performer = Performer.objects.create(name=name)
-                this_event.performers.add(performer)
-    request.session['geo'] = True
-    return redirect('/');
-
-
-def getData(url):
-    response = requests.get(url)
-    return json.loads(response.text)
-
-
-def addVenuesToDatabaseIfNecessary(venues):
-    for venue in venues:
-        name = venue['name']
-        address = venue['address']
-        extended_address = venue['extended_address']
-        try:
-            Venue.objects.get(name=name)
-        except:
-            Venue.objects.create(name=name, address=address, extended_address=extended_address)
+                thisEvent.performers.add(performer)
 
 
 def sell_search(request):

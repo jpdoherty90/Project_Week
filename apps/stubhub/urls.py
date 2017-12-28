@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^login_attempt$', views.login),
     url(r'^log_out$', views.log_out),
     url(r'^log_out/confirm$', views.log_out_confirm),
-    url(r'^log_out/confirm/remove$', views.remove_all_from_cart),
+    url(r'^log_out/confirm/remove$', views.removeAllFromCart),
     url(r'^sell_tickets_search$', views.sell_search),
     url(r'^sell/(?P<parameter>\d+)$', views.init_sale),
     url(r'^sell/(?P<parameter>\d+)/post_tickets$', views.post_tickets),

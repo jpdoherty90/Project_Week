@@ -30,7 +30,7 @@
                     {%for ticket in items%}
                     <tr>
                         <td>{{ticket.event.title}}</td>
-                        <td>{{ticket.seat_num}}{{ticket.seat_letter}}</td>
+                        <td>{{ticket.seat}}</td>
                         <td>${{ticket.price}}</td>
                         <td>{{ticket.event.venue.name}}</td>
                     </tr>

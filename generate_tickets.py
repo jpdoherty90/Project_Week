@@ -1,23 +1,22 @@
 import django
 from random import randint
 from autofixture import AutoFixture
-from apps.stubhub.models import *
 
-def get_rand_price():
+def getRandomPrice():
     return randint(15,125)
 
-def get_rand_seat_num():
-    return randint(1,200)
-
-def get_rand_seat_letter():
+def getRandomSeatLetter():
     letters = ["A", "B", "C", "D", "E", "F", "G"]
     num = randint(0, 6)
     return letters[num]
 
+def getRandomSeatNumber():
+    num = randint(1,200)
+    return str(num)
+
 fixture = AutoFixture(Ticket, field_values = {
-    'price': get_rand_price, 
-    'seat_num': get_rand_seat_num,
-    'seat_letter': get_rand_seat_letter,
+    'price': getRandomPrice(), 
+    'seat': getRandomSeatLetter() + getRandomSeatNumber(),
     'buyer': None, 
 })
 

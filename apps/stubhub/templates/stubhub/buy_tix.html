@@ -24,12 +24,11 @@
                 <option value="seat">Seat</option>
                 <option value="price_asc">Lowest Price</option>
                 <option value="price_desc">Highest Price</option>
-                <option value="best_value">Best Value</option>
             </select>
         </form>
         {% for ticket in available_tix %}
             <br>
-            <p>Seat {{ ticket.seat_num }}{{ ticket.seat_letter }} for ${{ ticket.price}}</p>
+            <p>Seat {{ ticket.seat }} for ${{ ticket.price}}</p>
             <p>for sale by <a href="/acc_info/{{ticket.seller.id}}">{{ticket.seller.first_name}} {{ticket.seller.last_name}}</a></p>
             <br>
             <form action="/add_to_cart" method="POST">
